@@ -2,16 +2,15 @@ PROJ = sushkov
 CXX = icpc
 # #XARCH=-QxHOST
 MICFLAGS = -mmic
-CXXFLAGS = -Wall -fopenmp -lrt
+CXXFLAGS = -Wall -fopenmp -lrt -O2 -march=core-avx2
 # # -opt-report -vec-report
 LOGIT = 2>&1 | tee last.log ; test 0 -eq $$PIPESTATUS
 
 # #all: sushkov.exe
 # #mic: sushkov.exe
 
-run: $(PROJ).exe $(PROJ).exe.mic
+run: $(PROJ).exe
 	./run.sh $(PROJ).exe a1
-	#./run.mic.sh $(PROJ).exe a1
 
 # OMP_NUM_THREADS=4 KMP_AFFINITY=compact,granularity=fine ./$< a1
 # ./$< a1

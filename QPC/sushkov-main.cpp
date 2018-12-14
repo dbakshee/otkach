@@ -843,12 +843,12 @@ initParams (struct Params *p)
 //  p->ymin= -1200;//-2001.12505034/2;//-1200.;
   p->ixmin = 0;
   p->iymin = 0;
-  p->ixmax = 1200;//int((p->xmax-p->xmin)/p->hx);
-  p->iymax = 960;//int((p->ymax-p->ymin)/p->hy);
+  p->ixmax = 600;//int((p->xmax-p->xmin)/p->hx);
+  p->iymax = 480;//int((p->ymax-p->ymin)/p->hy);
 //  p->ixmax = 600;//int((p->xmax-p->xmin)/p->hx);
 //  p->iymax = 480;//int((p->ymax-p->ymin)/p->hy);
-  p->hx =  2.5;//3000./p->ixmax;//5.0844;//4.;//2.;			//step along x 
-  p->hy =  2.5;//2400./p->iymax;//4.99033;
+  p->hx =  5;//3000./p->ixmax;//5.0844;//4.;//2.;			//step along x 
+  p->hy =  5;//2400./p->iymax;//4.99033;
 //  p->hx =  3000./p->ixmax;//5.0844;//4.;//2.;			//step along x 
 //  p->hy =  2400./p->iymax;//4.99033;
 //  p->hx =  2038.85309382/(p->ixmax+1);//5.0844;//4.;//2.;			//step along x 
