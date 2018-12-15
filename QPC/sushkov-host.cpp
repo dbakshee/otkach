@@ -180,22 +180,22 @@ int compute_host(real *u0,      /* U(n1,n2,n3) */
 //1111
         for (int k = 1; k < iz_ins2; ++k)
         {
-                u0(ixmin, iymin, k) = ((u0(ixmin, iymin, k - 1) + u0(ixmin, iymin, k + 1)) * hzhz
+                u1(ixmin, iymin, k) = ((u0(ixmin, iymin, k - 1) + u0(ixmin, iymin, k + 1)) * hzhz
                                        +      (u0(ixmax - 1, iymin, k) + u0(ixmin + 1, iymin, k)) * hxhx
                                        +      (u0(ixmin, iymax - 1, k) + u0(ixmin, iymin + 1, k)) * hyhy) * hxhyhz;
-                u0(ixmin, iymax, k) = ((u0(ixmin, iymax, k - 1) + u0(ixmin, iymax, k + 1)) * hzhz
+                u1(ixmin, iymax, k) = ((u0(ixmin, iymax, k - 1) + u0(ixmin, iymax, k + 1)) * hzhz
                                        +      (u0(ixmax - 1, iymax, k) + u0(ixmin + 1, iymax, k)) * hxhx
                                        +      (u0(ixmin, iymax - 1, k) + u0(ixmin, iymin + 1, k)) * hyhy) * hxhyhz;
-                u0(ixmax, iymax, k) = ((u0(ixmax, iymax, k - 1) + u0(ixmax, iymax, k + 1)) * hzhz
+                u1(ixmax, iymax, k) = ((u0(ixmax, iymax, k - 1) + u0(ixmax, iymax, k + 1)) * hzhz
                                        +      (u0(ixmax - 1, iymax, k) + u0(ixmin + 1, iymax, k)) * hxhx
                                        +      (u0(ixmax, iymax - 1, k) + u0(ixmax, iymin + 1, k)) * hyhy) * hxhyhz;
-                u0(ixmax, iymin, k) = ((u0(ixmax, iymin, k - 1) + u0(ixmax, iymin, k + 1)) * hzhz
+                u1(ixmax, iymin, k) = ((u0(ixmax, iymin, k - 1) + u0(ixmax, iymin, k + 1)) * hzhz
                                        +      (u0(ixmax - 1, iymin, k) + u0(ixmin + 1, iymin, k)) * hxhx
                                        +      (u0(ixmax, iymax - 1, k) + u0(ixmax, iymin + 1, k)) * hyhy) * hxhyhz;
-                u1(ixmax, iymin, k) = u0(ixmax, iymin, k);
-                u1(ixmax, iymax, k) = u0(ixmax, iymax, k);
-                u1(ixmin, iymin, k) = u0(ixmin, iymin, k);
-                u1(ixmin, iymax, k) = u0(ixmin, iymax, k);
+//                u1(ixmax, iymin, k) = u0(ixmax, iymin, k);
+//                u1(ixmax, iymax, k) = u0(ixmax, iymax, k);
+//                u1(ixmin, iymin, k) = u0(ixmin, iymin, k);
+//                u1(ixmin, iymax, k) = u0(ixmin, iymax, k);
         }
 
                        kk=iz_ins2;
@@ -216,185 +216,170 @@ int compute_host(real *u0,      /* U(n1,n2,n3) */
                        u1(ixmin, j, kk) = u0(i, j, kk);
 
                        u0(ixmax, j, kk) = u0(i, j, kk);
-                       u1(ixmax, j, kk) = u0(i, j, kk);
+                       u1(ixmax, j, kk) = u1(i, j, kk);
 
                        u0(ixmax, iymax, kk) = u0(i, j, kk);
-                       u1(ixmax, iymax, kk) = u0(i, j, kk);
+                       u1(ixmax, iymax, kk) = u1(i, j, kk);
 
                        u0(ixmin, iymax, kk) = u0(i, j, kk);
-                       u1(ixmin, iymax, kk) = u0(i, j, kk);
+                       u1(ixmin, iymax, kk) = u1(i, j, kk);
                        }
     hzhz = 1. / (hz * hz);
     hxhyhz = 1. / (2. * hzhz + 2. * hxhx + 2. * hyhy);
 
         for (int k = iz_ins2+1; k < iz1; ++k)
         {
-                u0(ixmin, iymin, k) = ((u0(ixmin, iymin, k - 1) + u0(ixmin, iymin, k + 1)) * hzhz
+                u1(ixmin, iymin, k) = ((u0(ixmin, iymin, k - 1) + u0(ixmin, iymin, k + 1)) * hzhz
                                        +      (u0(ixmax - 1, iymin, k) + u0(ixmin + 1, iymin, k)) * hxhx
                                        +      (u0(ixmin, iymax - 1, k) + u0(ixmin, iymin + 1, k)) * hyhy) * hxhyhz;
-                u0(ixmin, iymax, k) = ((u0(ixmin, iymax, k - 1) + u0(ixmin, iymax, k + 1)) * hzhz
+                u1(ixmin, iymax, k) = ((u0(ixmin, iymax, k - 1) + u0(ixmin, iymax, k + 1)) * hzhz
                                        +      (u0(ixmax - 1, iymax, k) + u0(ixmin + 1, iymax, k)) * hxhx
                                        +      (u0(ixmin, iymax - 1, k) + u0(ixmin, iymin + 1, k)) * hyhy) * hxhyhz;
-                u0(ixmax, iymax, k) = ((u0(ixmax, iymax, k - 1) + u0(ixmax, iymax, k + 1)) * hzhz
+                u1(ixmax, iymax, k) = ((u0(ixmax, iymax, k - 1) + u0(ixmax, iymax, k + 1)) * hzhz
                                        +      (u0(ixmax - 1, iymax, k) + u0(ixmin + 1, iymax, k)) * hxhx
                                        +      (u0(ixmax, iymax - 1, k) + u0(ixmax, iymin + 1, k)) * hyhy) * hxhyhz;
-                u0(ixmax, iymin, k) = ((u0(ixmax, iymin, k - 1) + u0(ixmax, iymin, k + 1)) * hzhz
+                u1(ixmax, iymin, k) = ((u0(ixmax, iymin, k - 1) + u0(ixmax, iymin, k + 1)) * hzhz
                                        +      (u0(ixmax - 1, iymin, k) + u0(ixmin + 1, iymin, k)) * hxhx
                                        +      (u0(ixmax, iymax - 1, k) + u0(ixmax, iymin + 1, k)) * hyhy) * hxhyhz;
-                u1(ixmax, iymin, k) = u0(ixmax, iymin, k);
-                u1(ixmax, iymax, k) = u0(ixmax, iymax, k);
-                u1(ixmin, iymin, k) = u0(ixmin, iymin, k);
-                u1(ixmin, iymax, k) = u0(ixmin, iymax, k);
+//                u1(ixmax, iymin, k) = u0(ixmax, iymin, k);
+//                u1(ixmax, iymax, k) = u0(ixmax, iymax, k);
+//                u1(ixmin, iymin, k) = u0(ixmin, iymin, k);
+//                u1(ixmin, iymax, k) = u0(ixmin, iymax, k);
         }
 
 //сшивка k=iz1
         kk=iz1;
         int j=iymax;
         int i = ixmin;
-                        u0(i, j, kk) = (4.*(u0(i, j, kk + 1)*eps_gaas/hzw + u0(i, j, kk - 1)*eps_gaalas/hz)
+                        u1(i, j, kk) = (4.*(u0(i, j, kk + 1)*eps_gaas/hzw + u0(i, j, kk - 1)*eps_gaalas/hz)
                                        -      (u0(i, j, kk + 2)*eps_gaas/hzw + u0(i, j, kk - 2)*eps_gaalas/hz))/
                                                (3.*(eps_gaas/hzw+eps_gaalas/hz));
         i = ixmax;
-                        u0(i, j, kk) = (4.*(u0(i, j, kk + 1)*eps_gaas/hzw + u0(i, j, kk - 1)*eps_gaalas/hz)
+                        u1(i, j, kk) = (4.*(u0(i, j, kk + 1)*eps_gaas/hzw + u0(i, j, kk - 1)*eps_gaalas/hz)
                                        -      (u0(i, j, kk + 2)*eps_gaas/hzw + u0(i, j, kk - 2)*eps_gaalas/hz))/
                                                (3.*(eps_gaas/hzw+eps_gaalas/hz));
         j=iymin;
-                        u0(i, j, kk) = (4.*(u0(i, j, kk + 1)*eps_gaas/hzw + u0(i, j, kk - 1)*eps_gaalas/hz)
+                        u1(i, j, kk) = (4.*(u0(i, j, kk + 1)*eps_gaas/hzw + u0(i, j, kk - 1)*eps_gaalas/hz)
                                        -      (u0(i, j, kk + 2)*eps_gaas/hzw + u0(i, j, kk - 2)*eps_gaalas/hz))/
                                                (3.*(eps_gaas/hzw+eps_gaalas/hz));
         i = ixmin;
-                        u0(i, j, kk) = (4.*(u0(i, j, kk + 1)*eps_gaas/hzw + u0(i, j, kk - 1)*eps_gaalas/hz)
+                        u1(i, j, kk) = (4.*(u0(i, j, kk + 1)*eps_gaas/hzw + u0(i, j, kk - 1)*eps_gaalas/hz)
                                        -      (u0(i, j, kk + 2)*eps_gaas/hzw + u0(i, j, kk - 2)*eps_gaalas/hz))/
                                                (3.*(eps_gaas/hzw+eps_gaalas/hz));
-        u1(ixmax, iymin, kk) = u0(ixmax, iymin, kk);
-        u1(ixmin, iymin, kk) = u0(ixmin, iymin, kk);
-        u1(ixmax, iymax, kk) = u0(ixmax, iymax, kk);
-        u1(ixmin, iymax, kk) = u0(ixmin, iymax, kk);
+//        u1(ixmax, iymin, kk) = u0(ixmax, iymin, kk);
+//        u1(ixmin, iymin, kk) = u0(ixmin, iymin, kk);
+//        u1(ixmax, iymax, kk) = u0(ixmax, iymax, kk);
+//        u1(ixmin, iymax, kk) = u0(ixmin, iymax, kk);
 //--------------------
-        OMP(parallel for)
-        for (int j = iymin; j <= iymax; ++j)
-        {
-#pragma ivdep
-#pragma simd
-             for (int i = ixmin; i <= ixmax; ++i)
-             {
-              Ez0(i,j) = u0(i,j,int(iz1+0.5*dw/hzw))+E_1; //  !!!!!!!!!!!!!!!!
-             }
-        }
-        real f3 = A4*hxhyhzw*M_PI*0.5/dw;
         for (int k = iz1 + 1; k < iz2; ++k)
         {
             real zz = (k-iz1)*hzw;
             real z1 = f3*sin(M_PI*zz/dw);
-                u0(ixmin, iymin, k) = ((u0(ixmin, iymin, k - 1) + u0(ixmin, iymin, k + 1)) * hzhzw
+                u1(ixmin, iymin, k) = ((u0(ixmin, iymin, k - 1) + u0(ixmin, iymin, k + 1)) * hzhzw
                                        +      (u0(ixmax - 1, iymin, k) + u0(ixmin + 1, iymin, k)) * hxhx
                                        +      (u0(ixmin, iymax - 1, k) + u0(ixmin, iymin + 1, k)) * hyhy) * hxhyhzw;
                        real dE = efermi-Ez0(ixmin, iymin);
-                       if(dE>0) u0(ixmin, iymin,k) = u0(ixmin, iymin,k) + z1 * dE;
+                       if(dE>0) u1(ixmin, iymin,k) = u1(ixmin, iymin,k) + z1 * dE;
 
-                u1(ixmin, iymin, k) = u0(ixmin, iymin, k);
-                u0(ixmin, iymax, k) = ((u0(ixmin, iymax, k - 1) + u0(ixmin, iymax, k + 1)) * hzhzw
+//                u1(ixmin, iymin, k) = u0(ixmin, iymin, k);
+                u1(ixmin, iymax, k) = ((u0(ixmin, iymax, k - 1) + u0(ixmin, iymax, k + 1)) * hzhzw
                                        +      (u0(ixmax - 1, iymax, k) + u0(ixmin + 1, iymax, k)) * hxhx
                                        +      (u0(ixmin, iymax - 1, k) + u0(ixmin, iymin + 1, k)) * hyhy) * hxhyhzw;
                        dE = efermi-Ez0(ixmin, iymax);
-                       if(dE>0) u0(ixmin, iymax,k) = u0(ixmin, iymax,k) + z1 * dE;
-                u1(ixmin, iymax, k) = u0(ixmin, iymax, k);
-                u0(ixmax, iymax, k) = ((u0(ixmax, iymax, k - 1) + u0(ixmax, iymax, k + 1)) * hzhzw
+                       if(dE>0) u1(ixmin, iymax,k) = u1(ixmin, iymax,k) + z1 * dE;
+//                u1(ixmin, iymax, k) = u0(ixmin, iymax, k);
+                u1(ixmax, iymax, k) = ((u0(ixmax, iymax, k - 1) + u0(ixmax, iymax, k + 1)) * hzhzw
                                        +      (u0(ixmax - 1, iymax, k) + u0(ixmin + 1, iymax, k)) * hxhx
                                        +      (u0(ixmax, iymax - 1, k) + u0(ixmax, iymin + 1, k)) * hyhy) * hxhyhzw;
                        dE = efermi-Ez0(ixmax, iymax);
-                       if(dE>0) u0(ixmax, iymax,k) = u0(ixmax, iymax,k) + z1 * dE;
-                u1(ixmax, iymax, k) = u0(ixmax, iymax, k);
-                u0(ixmax, iymin, k) = ((u0(ixmax, iymin, k - 1) + u0(ixmax, iymin, k + 1)) * hzhzw
+                       if(dE>0) u1(ixmax, iymax,k) = u1(ixmax, iymax,k) + z1 * dE;
+//                u1(ixmax, iymax, k) = u0(ixmax, iymax, k);
+                u1(ixmax, iymin, k) = ((u0(ixmax, iymin, k - 1) + u0(ixmax, iymin, k + 1)) * hzhzw
                                        +      (u0(ixmax - 1, iymin, k) + u0(ixmin + 1, iymin, k)) * hxhx
                                        +      (u0(ixmax, iymax - 1, k) + u0(ixmax, iymin + 1, k)) * hyhy) * hxhyhzw;
                        dE = efermi-Ez0(ixmax, iymin);
-                       if(dE>0) u0(ixmax, iymin,k) = u0(ixmax, iymin,k) + z1 * dE;
-                u1(ixmax, iymin, k) = u0(ixmax, iymin, k);
+                       if(dE>0) u1(ixmax, iymin,k) = u1(ixmax, iymin,k) + z1 * dE;
+//                u1(ixmax, iymin, k) = u0(ixmax, iymin, k);
         }
 //----------------------
 //сшивка k=iz2
         kk=iz2;
         j = iymin;
         i = ixmin;
-        u0(i, j, kk) = (4.*(u0(i, j, kk + 1)*eps_gaalas/hzb + u0(i, j, kk - 1)*eps_gaas/hzw)
+        u1(i, j, kk) = (4.*(u0(i, j, kk + 1)*eps_gaalas/hzb + u0(i, j, kk - 1)*eps_gaas/hzw)
                                        -      (u0(i, j, kk + 2)*eps_gaalas/hzb + u0(i, j, kk - 2)*eps_gaas/hzw))/
                                                (3.*(eps_gaas/hzw+eps_gaalas/hzb));
         j = iymax;
         i = ixmin;
-        u0(i, j, kk) = (4.*(u0(i, j, kk + 1)*eps_gaalas/hzb + u0(i, j, kk - 1)*eps_gaas/hzw)
+        u1(i, j, kk) = (4.*(u0(i, j, kk + 1)*eps_gaalas/hzb + u0(i, j, kk - 1)*eps_gaas/hzw)
                                        -      (u0(i, j, kk + 2)*eps_gaalas/hzb + u0(i, j, kk - 2)*eps_gaas/hzw))/
                                                (3.*(eps_gaas/hzw+eps_gaalas/hzb));
         j = iymax;
         i = ixmax;
-        u0(i, j, kk) = (4.*(u0(i, j, kk + 1)*eps_gaalas/hzb + u0(i, j, kk - 1)*eps_gaas/hzw)
+        u1(i, j, kk) = (4.*(u0(i, j, kk + 1)*eps_gaalas/hzb + u0(i, j, kk - 1)*eps_gaas/hzw)
                                        -      (u0(i, j, kk + 2)*eps_gaalas/hzb + u0(i, j, kk - 2)*eps_gaas/hzw))/
                                                (3.*(eps_gaas/hzw+eps_gaalas/hzb));
         j = iymin;
         i = ixmax;
-        u0(i, j, kk) = (4.*(u0(i, j, kk + 1)*eps_gaalas/hzb + u0(i, j, kk - 1)*eps_gaas/hzw)
+        u1(i, j, kk) = (4.*(u0(i, j, kk + 1)*eps_gaalas/hzb + u0(i, j, kk - 1)*eps_gaas/hzw)
                                        -      (u0(i, j, kk + 2)*eps_gaalas/hzb + u0(i, j, kk - 2)*eps_gaas/hzw))/
                                                (3.*(eps_gaas/hzw+eps_gaalas/hzb));
-        u1(ixmax, iymin, kk) = u0(ixmax, iymin, kk);
-        u1(ixmin, iymin, kk) = u0(ixmin, iymin, kk);
-        u1(ixmax, iymax, kk) = u0(ixmax, iymax, kk);
-        u1(ixmin, iymax, kk) = u0(ixmin, iymax, kk);
+//        u1(ixmax, iymin, kk) = u0(ixmax, iymin, kk);
+//        u1(ixmin, iymin, kk) = u0(ixmin, iymin, kk);
+//        u1(ixmax, iymax, kk) = u0(ixmax, iymax, kk);
+//        u1(ixmin, iymax, kk) = u0(ixmin, iymax, kk);
 
         for (int k = iz2 + 1; k < izb; ++k)
         {
-                u0(ixmin, iymin, k) = ((u0(ixmin, iymin, k - 1) + u0(ixmin, iymin, k + 1)) * hzhz
+                u1(ixmin, iymin, k) = ((u0(ixmin, iymin, k - 1) + u0(ixmin, iymin, k + 1)) * hzhz
                                        +      (u0(ixmax - 1, iymin, k) + u0(ixmin + 1, iymin, k)) * hxhx
                                        +      (u0(ixmin, iymax - 1, k) + u0(ixmin, iymin + 1, k)) * hyhy) * hxhyhz;
-                u0(ixmin, iymax, k) = ((u0(ixmin, iymax, k - 1) + u0(ixmin, iymax, k + 1)) * hzhz
+                u1(ixmin, iymax, k) = ((u0(ixmin, iymax, k - 1) + u0(ixmin, iymax, k + 1)) * hzhz
                                        +      (u0(ixmax - 1, iymax, k) + u0(ixmin + 1, iymax, k)) * hxhx
                                        +      (u0(ixmin, iymax - 1, k) + u0(ixmin, iymin + 1, k)) * hyhy) * hxhyhz;
-                u0(ixmax, iymax, k) = ((u0(ixmax, iymax, k - 1) + u0(ixmax, iymax, k + 1)) * hzhz
+                u1(ixmax, iymax, k) = ((u0(ixmax, iymax, k - 1) + u0(ixmax, iymax, k + 1)) * hzhz
                                        +      (u0(ixmax - 1, iymax, k) + u0(ixmin + 1, iymax, k)) * hxhx
                                        +      (u0(ixmax, iymax - 1, k) + u0(ixmax, iymin + 1, k)) * hyhy) * hxhyhz;
-                u0(ixmax, iymin, k) = ((u0(ixmax, iymin, k - 1) + u0(ixmax, iymin, k + 1)) * hzhz
+                u1(ixmax, iymin, k) = ((u0(ixmax, iymin, k - 1) + u0(ixmax, iymin, k + 1)) * hzhz
                                        +      (u0(ixmax - 1, iymin, k) + u0(ixmin + 1, iymin, k)) * hxhx
                                        +      (u0(ixmax, iymax - 1, k) + u0(ixmax, iymin + 1, k)) * hyhy) * hxhyhz;
-        u1(ixmax, iymin, k) = u0(ixmax, iymin, k);
-        u1(ixmin, iymin, k) = u0(ixmin, iymin, k);
-        u1(ixmax, iymax, k) = u0(ixmax, iymax, k);
-        u1(ixmin, iymax, k) = u0(ixmin, iymax, k);
+//        u1(ixmax, iymin, k) = u0(ixmax, iymin, k);
+//        u1(ixmin, iymin, k) = u0(ixmin, iymin, k);
+//        u1(ixmax, iymax, k) = u0(ixmax, iymax, k);
+//        u1(ixmin, iymax, k) = u0(ixmin, iymax, k);
         }
 
 //2222
-        OMP(parallel for)
+//        OMP(parallel for)
         for (int k = 1; k < iz_ins2; ++k)
         {
-#pragma ivdep
-#pragma simd
+//#pragma ivdep
+//#pragma simd
             for (int j = iymin+1; j < iymax; ++j)
             {
                 u0(ixmin, j, k) = ((u0(ixmin, j, k - 1) + u0(ixmin, j, k + 1)) * hzhz
                                        +      (u0(ixmax - 1, j, k) + u0(ixmin + 1, j, k)) * hxhx
                                        +      (u0(ixmin, j - 1, k) + u0(ixmin, j + 1, k)) * hyhy) * hxhyhz;
 
-              //  u0(ixmin, j, k) = u0(ixmin+1, j, k);  //Vitaly's condition
-
-                u0(ixmax, j, k) = u0(ixmin, j, k);
+                u1(ixmax, j, k) = u0(ixmin, j, k);
                 u1(ixmax, j, k) = u0(ixmin, j, k);
                 u1(ixmin, j, k) = u0(ixmin, j, k);
             }
         }
-        OMP(parallel for)
+//        OMP(parallel for)
         for (int k = 1; k < iz_ins2; ++k)
         {
-#pragma ivdep
-#pragma simd
+//#pragma ivdep
+//#pragma simd
             for (int i = ixmin+1; i < ixmax; ++i)
             {
                 u0(i, iymin, k) = ((u0(i, iymin, k - 1) + u0(i, iymin, k + 1)) * hzhz
                                        +      (u0(i - 1, iymin, k) + u0(i + 1, iymin, k)) * hxhx
                                        +      (u0(i, iymax - 1, k) + u0(i, iymin + 1, k)) * hyhy) * hxhyhz;
 
-              //  u0(i, iymin, k) = u0(i, iymin+1, k);  //Vitaly's condition
                 u0(i, iymax, k) = u0(i, iymin, k);
                 u1(i, iymin, k) = u0(i, iymin, k);
                 u1(i, iymax, k) = u0(i, iymin, k);
-
             }
         }
 //!!!!!!!!!!!!!!!!!!!!!!! раскомментировала
@@ -438,18 +423,17 @@ int compute_host(real *u0,      /* U(n1,n2,n3) */
                        u1(i, iymax, kk) = u0(i, j, kk);
          }
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        OMP(parallel for)
+//        OMP(parallel for)
         for (int k = iz_ins2+1; k < iz1; ++k)
         {
-#pragma ivdep
-#pragma simd
+//#pragma ivdep
+//#pragma simd
             for (int i = ixmin+1; i < ixmax; ++i)
             {
                 u0(i, iymin, k) = ((u0(i, iymin, k - 1) + u0(i, iymin, k + 1)) * hzhz
                                        +      (u0(i - 1, iymin, k) + u0(i + 1, iymin, k)) * hxhx
                                        +      (u0(i, iymax - 1, k) + u0(i, iymin + 1, k)) * hyhy) * hxhyhz;
 
-             //   u0(i, iymin, k) = u0(i, iymin+1, k);  //Vitaly's condiction
                 u0(i, iymax, k) = u0(i, iymin, k);
                 u1(i, iymin, k) = u0(i, iymin, k);
                 u1(i, iymax, k) = u0(i, iymin, k);
@@ -457,18 +441,16 @@ int compute_host(real *u0,      /* U(n1,n2,n3) */
             }
         }
 
-        OMP(parallel for)
+//        OMP(parallel for)
         for (int k = iz_ins2+1; k < iz1; ++k)
         {
-#pragma ivdep
-#pragma simd
+//#pragma ivdep
+//#pragma simd
             for (int j = iymin+1; j < iymax; ++j)
             {
                 u0(ixmin, j, k) = ((u0(ixmin, j, k - 1) + u0(ixmin, j, k + 1)) * hzhz
                                        +      (u0(ixmax - 1, j, k) + u0(ixmin + 1, j, k)) * hxhx
                                        +      (u0(ixmin, j - 1, k) + u0(ixmin, j + 1, k)) * hyhy) * hxhyhz;
-              //  u0(ixmin, j, k) = u0(ixmin+1, j, k); //Vitaly's condition
-
                 u0(ixmax, j, k) = u0(ixmin, j, k);
                 u1(ixmax, j, k) = u0(ixmin, j, k);
                 u1(ixmin, j, k) = u0(ixmin, j, k);
@@ -483,7 +465,7 @@ int compute_host(real *u0,      /* U(n1,n2,n3) */
                                        -      (u0(i, j, kk + 2)*eps_gaas/hzw + u0(i, j, kk - 2)*eps_gaalas/hz))/
                                                (3.*(eps_gaas/hzw+eps_gaalas/hz));
                         u0(ixmax, j, kk) = u0(ixmin, j, kk);
-                        u1(ixmax, j, kk) = u0(ixmin, j, kk);
+                        u0(ixmax, j, kk) = u0(ixmin, j, kk);
                         u1(ixmin, j, kk) = u0(ixmin, j, kk);
         }
           for (int i=ixmax-1; i>ixmin; --i)
@@ -497,41 +479,38 @@ int compute_host(real *u0,      /* U(n1,n2,n3) */
                         u1(i, iymin, kk) = u0(i, iymin, kk);
         }
 /////////////////////////
-        OMP(parallel for)
+//        OMP(parallel for)
         for (int k = iz1 + 1; k < iz2; ++k)
         {
             real zz = (k-iz1)*hzw;
             real z1 = f3*sin(M_PI*zz/dw);
-#pragma ivdep
-#pragma simd
+//#pragma ivdep
+//#pragma simd
             for (int j = iymin+1; j < iymax; ++j)
             {
-               // u1(ixmin, j, k) = u0(ixmin+1, j, k);//Vitaly
-                u0(ixmin, j, k) = ((u0(ixmin, j, k - 1) + u0(ixmin, j, k + 1)) * hzhzw
+                u1(ixmin, j, k) = ((u0(ixmin, j, k - 1) + u0(ixmin, j, k + 1)) * hzhzw
                                        +      (u0(ixmax - 1, j, k) + u0(ixmin + 1, j, k)) * hxhx
                                        +      (u0(ixmin, j - 1, k) + u0(ixmin, j + 1, k)) * hyhy) * hxhyhzw;
                        real dE = efermi-Ez0(ixmin,j);
-                       if(dE>0) u0(ixmin,j,k) = u0(ixmin,j,k) + z1 * dE;
-                       u1(ixmin, j, k) = u0(ixmin, j, k);
-//                u1(ixmax, j, k) = u0(ixmax-1, j, k);/*((u0(ixmax, j, k - 1) + u0(ixmax, j, k + 1)) * hzhzw
-                u0(ixmax, j, k) = ((u0(ixmax, j, k - 1) + u0(ixmax, j, k + 1)) * hzhzw
+                       if(dE>0) u1(ixmin,j,k) = u1(ixmin,j,k) + z1 * dE;
+//                       u1(ixmin, j, k) =u0(ixmin, j, k);
+                u1(ixmax, j, k) = ((u0(ixmax, j, k - 1) + u0(ixmax, j, k + 1)) * hzhzw
                                        +      (u0(ixmax - 1, j, k) + u0(ixmin + 1, j, k)) * hxhx
                                        +      (u0(ixmax, j - 1, k) + u0(ixmax, j + 1, k)) * hyhy) * hxhyhzw;
                        dE = efermi-Ez0(ixmax,j);
-                       if(dE>0) u0(ixmax,j,k) = u0(ixmax,j,k) + z1 * dE;
-                u1(ixmax, j, k) = u0(ixmax, j, k);
+                       if(dE>0) u1(ixmax,j,k) = u1(ixmax,j,k) + z1 * dE;
+//                u1(ixmax, j, k) = u0(ixmax, j, k);
             }
         }
-        OMP(parallel for)
+//        OMP(parallel for)
         for (int k = iz1 + 1; k < iz2; ++k)
         {
             real zz = (k-iz1)*hzw;
             real z1 = f3*sin(M_PI*zz/dw);
-#pragma ivdep
-#pragma simd
+//#pragma ivdep
+//#pragma simd
             for (int i = ixmin+1; i < ixmax; ++i)
             {
-//                u1(i, iymin, k) = u0(i, iymin+1, k);/*((u0(i, iymin, k - 1) + u0(i, iymin, k + 1)) * hzhzw
                 u0(i, iymin, k) = ((u0(i, iymin, k - 1) + u0(i, iymin, k + 1)) * hzhzw
                                        +      (u0(i - 1, iymin, k) + u0(i + 1, iymin, k)) * hxhx
                                        +      (u0(i, iymax - 1, k) + u0(i, iymin + 1, k)) * hyhy) * hxhyhzw;
@@ -570,39 +549,36 @@ int compute_host(real *u0,      /* U(n1,n2,n3) */
                         u1(i, iymax, kk) = u0(i, iymin, kk);
                         u1(i, iymin, kk) = u0(i, iymin, kk);
         }
-        OMP(parallel for)
+//        OMP(parallel for)
         for (int k = iz2 + 1; k < izb; ++k)
         {
-#pragma ivdep
-#pragma simd
+//#pragma ivdep
+//#pragma simd
             for (int j = iymin+1; j < iymax; ++j)
             {
                 u0(ixmin, j, k) = ((u0(ixmin, j, k - 1) + u0(ixmin, j, k + 1)) * hzhz
                                        +      (u0(ixmax - 1, j, k) + u0(ixmin + 1, j, k)) * hxhx
                                        +      (u0(ixmin, j - 1, k) + u0(ixmin, j + 1, k)) * hyhy) * hxhyhz;
 
-//                u0(ixmin, j, k) = u0(ixmin+1, j, k);
                 u1(ixmax, j, k) = u0(ixmin, j, k);
                 u1(ixmin, j, k) = u0(ixmin, j, k);
                 u0(ixmax, j, k) = u0(ixmin, j, k);
             }
         }
-        OMP(parallel for)
+//        OMP(parallel for)
         for (int k = iz2 + 1; k < izb; ++k)
         {
-#pragma ivdep
-#pragma simd
+//#pragma ivdep
+//#pragma simd
             for (int i = ixmin+1; i < ixmax; ++i)
             {
                 u0(i, iymin, k) = ((u0(i, iymin, k - 1) + u0(i, iymin, k + 1)) * hzhz
                                        +      (u0(i - 1, iymin, k) + u0(i + 1, iymin, k)) * hxhx
                                        +      (u0(i, iymax - 1, k) + u0(i, iymin + 1, k)) * hyhy) * hxhyhz;
 
-//                u0(i, iymin, k) = u0(i, iymin+1, k);
                 u0(i, iymax, k) = u0(i, iymin, k);
                 u1(i, iymin, k) = u0(i, iymin, k);
                 u1(i, iymax, k) = u0(i, iymin, k);
-
             }
         }
 // j=iymin j=iymax
@@ -623,7 +599,7 @@ int compute_host(real *u0,      /* U(n1,n2,n3) */
                 for (int i = ixmin + 1; i < ixmax; ++i)
                 {
                     real x=hx*i+xmin;
-                    if(topGate(x,y,t_ins)) u1(i, j, k) = Utg;
+                    if(topGate(x,y,t_ins)) {u1(i, j, k) = Utg; u0(i, j, k) = Utg;}
                     else
                     {
                         u1(i, j, k) = ((u0(i, j, k - 1) + u0(i, j, k + 1)) * hzhz
@@ -648,23 +624,24 @@ int compute_host(real *u0,      /* U(n1,n2,n3) */
                 for (int i = ixmin + 1; i < ixmax; ++i)
                 {
                     real x=hx*i+xmin;
-                    if(topGate(x,y,t_ins)&&k<=iz_ins2-iz_ins1) u1(i, j, k) = Utg;
+                    if(topGate(x,y,t_ins)&&k<=iz_ins2-iz_ins1) {u1(i, j, k) = Utg; u0(i, j, k) = Utg;}
                     else
                     {
                         u1(i, j, k) = ((u0(i, j, k - 1) + u0(i, j, k + 1)) * hzhz
                                        +      (u0(i - 1, j, k) + u0(i + 1, j, k)) * hxhx
                                        +      (u0(i, j - 1, k) + u0(i, j + 1, k)) * hyhy) * hxhyhz;
                     }
-                    if(splitGate(x,y)) u1(i, j, k) = Usg;
+                    if(splitGate(x,y)) {u1(i, j, k) = Usg; u0(i, j, k) = Usg;}
+//                 u1(i, j, kk) = u0(i, j, kk);
                 }
             }
         }
         dt[2] = _rdtsc()-dt[2];
 // correct derivatives for between insolator and GaAs layers
         dt[3] = _rdtsc();
-            kk=iz_ins2;//+1;//iz_ins2+1;
+            kk=iz_ins2;
             OMP(parallel for)
-            for (int j = 1; j <iymax; ++j)      //убрала крайние точки
+            for (int j = 1; j <iymax; ++j)
             {
                 real y=hy*j+ymin;
 #pragma ivdep
@@ -672,7 +649,9 @@ int compute_host(real *u0,      /* U(n1,n2,n3) */
                 for (int i = 1; i < ixmax; ++i)
                 {
                        real x=hx*i+xmin;
+//                       real dU1=ns*(0.1*1.602/8.85);
                        real dU1=-1000*s*aimp1(i,j)*(0.1*1.602/8.85);
+//                       real dU1=(1000*s*aimp1(i,j)+ns)*(0.1*1.602/8.85);
                       if(!splitGate(x,y))
                         {
                         u0(i, j, kk) = (4.*(u0(i, j, kk + 1)*eps_gaas/hz + u0(i, j, kk - 1)*eps_ins/hz_gate)
@@ -707,11 +686,9 @@ int compute_host(real *u0,      /* U(n1,n2,n3) */
         kk=izc;
         OMP(parallel for)
         for (int j=0; j<=iymax; ++j)
-//          for (int j=iymax-1; j>iymin; --j)
         {
 #pragma ivdep
 #pragma simd
-//            for (int i = ixmin; i <= ixmax; ++i)
             for (int i = ixmin+1; i < ixmax; ++i)
             {
                         u0(i, j, kk) = (4.*(u0(i, j, kk + 1)*eps_gaalas/hz + u0(i, j, kk - 1)*eps_gaas/hz)
@@ -746,14 +723,11 @@ int compute_host(real *u0,      /* U(n1,n2,n3) */
         kk=iz1;
         OMP(parallel for)
         for (int j=iymin+1; j<iymax; ++j)
-//        for (int j=iymin; j<=iymax; ++j)
         {
 #pragma ivdep
 #pragma simd
-//            for (int i = ixmin; i <= ixmax; ++i)
             for (int i = ixmin+1; i < ixmax; ++i)
             {
-//U_new(iz)=(4.*(U_old(iz+1)*eps_gaas/hzw+U_new(iz-1)*eps_gaalas/hz)-(U_old(iz+2)*eps_gaas/hzw+U_new(iz-2)*eps_gaalas/hz))/(3.*(eps_gaas/hzw+eps_gaalas/hz))
                         u0(i, j, kk) = (4.*(u0(i, j, kk + 1)*eps_gaas/hzw + u0(i, j, kk - 1)*eps_gaalas/hz)
                                        -      (u0(i, j, kk + 2)*eps_gaas/hzw + u0(i, j, kk - 2)*eps_gaalas/hz))/
                                                (3.*(eps_gaas/hzw+eps_gaalas/hz));
@@ -784,14 +758,11 @@ int compute_host(real *u0,      /* U(n1,n2,n3) */
         kk=iz2;
         OMP(parallel for)
         for (int j=iymin+1; j<iymax; ++j)
-//        for (int j=iymin; j<=iymax; ++j)
         {
 #pragma ivdep
 #pragma simd
-//            for (int i = ixmin; i <= ixmax; ++i)
             for (int i = ixmin+1; i < ixmax; ++i)
             {
-//                        u1(i, j, kk) = (4.*(u0(i, j, kk + 1)*eps_gaalas/hzb + u1(i, j, kk - 1)*eps_gaas/hzw)
                         u0(i, j, kk) = (4.*(u0(i, j, kk + 1)*eps_gaalas/hzb + u0(i, j, kk - 1)*eps_gaas/hzw)
                                        -      (u0(i, j, kk + 2)*eps_gaalas/hzb + u0(i, j, kk - 2)*eps_gaas/hzw))/
                                                (3.*(eps_gaas/hzw+eps_gaalas/hzb));
