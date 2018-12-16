@@ -3,7 +3,11 @@
 #include <stdio.h>
 //#include <malloc.h>
 #include <math.h>
+#ifdef _MSC_VER
+#include <intrin.h>
+#else
 #include <xmmintrin.h>
+#endif
 #define _rdtsc __rdtsc
 #include "ringnew2.h"
 #include <vector>

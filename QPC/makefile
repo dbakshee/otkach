@@ -32,3 +32,10 @@ clean:
 
 %/.mkdir:
 	mkdir -p $* && touch $@
+
+
+pc: $(PROJ).pc.exe
+	./$< a1
+
+$(PROJ).pc.exe: sushkov-main.cpp sushkov-host.cpp
+	cl -openmp -O2 -arch:AVX2 $^ -Fe$@

@@ -69,7 +69,7 @@ void setimp(int nimpur, real *aimp1, int ixa, int ixb, int iya, int iyb)
 	    if (j > iyb) continue;
 	    aimp1(i,j) += 1.;
 	    ++k;
-	}       
+	}
 }
 
 void writeimp(const char *fname, real *aimp1, int ixa, int ixb, int iya, int iyb)
@@ -270,7 +270,7 @@ write2_to_file (const char *fname, real * Ez0, struct Params *params)
     {
       double ueff = -Ez0 (i, j);
       double du   = ueff-us;
-      rms = rms+du*du; 
+      rms = rms+du*du;
     }
    }
    rms = sqrt(rms/isum);
@@ -331,7 +331,7 @@ write2_to_file (const char *fname, real * Ez0, struct Params *params)
     {
       double ueff = -Ez0 (i, j);
       double du   = ueff-us;
-      rms = rms+du*du; 
+      rms = rms+du*du;
     }
    }
    rms = sqrt(rms/isum);
@@ -347,7 +347,7 @@ write2_to_file (const char *fname, real * Ez0, struct Params *params)
         fprintf(o,"\n");
    }
   fclose (o);
-} 
+}
 void
 write2grad_to_file (const char *fname, real * Ez0, struct Params *params)
 {
@@ -374,7 +374,7 @@ write2grad_to_file (const char *fname, real * Ez0, struct Params *params)
 //            real ueff = Ez0(i, j);
 //          fprintf(o,"%lg %lg %lg\n", hx*i, hy*j, ueff);
       real F, Fx,Fy, Uxp1, Uxm1, Uyp1, Uym1;
-      if(i!=0&&j!=0&&i!=ixmax&&j!=iymax) 
+      if(i!=0&&j!=0&&i!=ixmax&&j!=iymax)
        {
        Fx=-0.5*1000*(Ez0 (i+1,  j)-Ez0 (i-1,  j))/hx;
        Fy=-0.5*1000*(Ez0 (i,  j+1)-Ez0 (i,  j-1))/hy;
@@ -469,7 +469,7 @@ writeEzofy_to_file(const char *fname, real * u0, int i, struct Params *params)
   }
   fclose (o);
 }
- 
+
 void
 writex_to_file (const char *fname, real * Ez0, int i, struct Params *params)
 {
@@ -622,8 +622,8 @@ damn_compute (const char *dtfilename)
   memset (aimp1, 0, sizeof (real) * NX * NY);
 //    if (dtfilename)
   if (1)
-  {       
-      read_dt("pot_n_imp7i5_500K.dt",u0,params); //  uniform 50K
+  {
+      read_dt("pot_n_imp7i5_500Kn.dt",u0,params); //  uniform 50K
 
       double us=0;
       for (int j = iymin; j <= iymax; ++j)
@@ -635,7 +635,7 @@ damn_compute (const char *dtfilename)
 	}
       }
       us=us/NX/NY;
-      printf ("us=%13.6g\n", us); 
+      printf ("us=%13.6g\n", us);
       write2_to_file ("ueff_500K.dat", Ez0, &params0);
       int ix0 = 0;
       writex_to_file ("Uofy_500K_c.dat", Ez0, (NX+1)/2, &params0);
@@ -682,7 +682,7 @@ damn_compute (const char *dtfilename)
 
   mytime_t myt0 = mytime ();	/* myt0 is the time when we started computation */
   int itn = 1;
-  int itlim = 1000; 
+  int itlim = 1000;
   int hbeat = 3;//50; /* we will adjust hbeat to report every HBEAT milliseconds */
   int imp1seed=37;//11;//17;//11;//71117;//11;//71117;
   srand(imp1seed);
@@ -715,7 +715,7 @@ damn_compute (const char *dtfilename)
     /* Report status and adjust hbeat */
     double ms = mytime_ms (myt1, myt2);
     double s0 = mytime_s (myt0, myt2);
-    real speriter = ms * 1e-3 / hbeat;                                                               
+    real speriter = ms * 1e-3 / hbeat;
     real gf = nflops / ms * 1e-6;
 
     it += hbeat;
@@ -730,7 +730,7 @@ damn_compute (const char *dtfilename)
       writex_to_file ("Uofy_500K.dat", Ez0, ix0, &params0);
       writex_to_file ("Uofy_0_500K.dat", Ez0, 0, &params0);
       write3_to_file ("Uofz_2deg_500K.dat", u1, 5, 100, &params0);
-      write3_to_file ("Uofz_gate_500K.dat", u1, 100, 180, &params0); 
+      write3_to_file ("Uofz_gate_500K.dat", u1, 100, 180, &params0);
       int iy0 = (NY+1)/2;
       writey_to_file ("Uofx_500K.dat", Ez0, iy0, &params0);
       writey_to_file ("Uofx_0_500K.dat", Ez0, 0, &params0);
@@ -756,24 +756,24 @@ damn_compute (const char *dtfilename)
 		{
 		  error = errtest;
 //          if (fabs(errtest) > fabs(error)) error = errtest;
-//  ier=i; jer=j; ker=k; 
+//  ier=i; jer=j; ker=k;
 		}
 	      }
 	    }
 	  }
 	}
      }
-      printf (" %5i(%3i) %4.0fs err=%13.6g  %10.5gs/iter %10.3gGF\n", it, hbeat, s0, error, speriter, gf); 
+      printf (" %5i(%3i) %4.0fs err=%13.6g  %10.5gs/iter %10.3gGF\n", it, hbeat, s0, error, speriter, gf);
       fflush(0);
-    
-    
+
+
     if (it>itlim)			/* save breakpoint file dt */
     {
       write2_to_file ("ueff_500K.dat", Ez0, &params0);
       itn=itn+1;
       itlim = 1000*itn;
       size_t iter = it;
-      FILE *f = fopen ("pot_n_imp7i5_500K.dt", "wb");
+      FILE *f = fopen ("pot_n_imp7i5_500Kpar.dt", "wb");
       assert (f);
       size_t bytes = sizeof (iter) + sizeof (real) * NX * NY * NZ;
       fwrite (&bytes, sizeof (bytes), 1, f);
@@ -815,20 +815,20 @@ initParams (struct Params *p)
 
   p->t_ins = 25;//30;		//60.;//25.;//30;//50.;          // space between top gate and split gate
   p->t_split_gate = 40;//30;		//50.;//20.;//10.;      //thickness of split gate
-  p->t_GaAs = 10;		//50;//50;//50;//50;//100;// 50;//30.;         //distance between split gate and 2DEG = AlGaAs layer thickness 
-  p->t1_AlGaAs = 27;		//50;//50;//50;//50;//100;// 50;//30.;         //distance between split gate and 2DEG = AlGaAs layer thickness 
-  p->t_w = 16;		//50;//50;//50;//50;//100;// 50;//30.;         //distance between split gate and 2DEG = AlGaAs layer thickness 
-  p->t2_AlGaAs = 100;		//50;//50;//50;//50;//100;// 50;//30.;         //distance between split gate and 2DEG = AlGaAs layer thickness 
+  p->t_GaAs = 10;		//50;//50;//50;//50;//100;// 50;//30.;         //distance between split gate and 2DEG = AlGaAs layer thickness
+  p->t1_AlGaAs = 27;		//50;//50;//50;//50;//100;// 50;//30.;         //distance between split gate and 2DEG = AlGaAs layer thickness
+  p->t_w = 16;		//50;//50;//50;//50;//100;// 50;//30.;         //distance between split gate and 2DEG = AlGaAs layer thickness
+  p->t2_AlGaAs = 100;		//50;//50;//50;//50;//100;// 50;//30.;         //distance between split gate and 2DEG = AlGaAs layer thickness
   p->t2_GaAs = 100.;		//100.;//70;//30.;            // GaAs layer thickness
   p->Vsg = -0.5;//-0.55;//0.45;//-0.2;//-0.6;//-0.75;//0.1;//-0.7;//-0.7;//-0.4;//-0.2;//-0.362;//-0.661;//-0.525;//-0.853+0.0525;//-0.72-0.2+0.0675;//-0.46;//-0.50-3*0.0579;//0.181;//3*0.06;//-0.6;//-0.9;//-1.3;//-1.1;//-1.;//-1.1;//-1.1;//-1.0;//-1.2;			//+5;
   p->Vtg = 1.06;//-1.418;//-1.4+3*0.05;//-1.22;//+1;//-1.1;//+0.1;//2.5;//1.4;//1.3;//1.20;//1;4.;			//5.;//-5.;
 //0-- -0.55;
 //0a-- -.525 definition
   //grid parameters (nm)
-  p->hz = 1.;			// step along z 
-  p->hzb = 1.;			// step along z 
+  p->hz = 1.;			// step along z
+  p->hzb = 1.;			// step along z
   p->hzw = 1;//0.5;			// step along z in well
-  p->hz_gate  = 1.;		//2.;  // step along around gate 
+  p->hz_gate  = 1.;		//2.;  // step along around gate
   p->hz_ins = 1.;		//2.;  // step along z in insulator
 //    xmax=2038.85309382;//2000.;
 //    ymax=2001.12505034;//2000.;
@@ -843,18 +843,18 @@ initParams (struct Params *p)
 //  p->ymin= -1200;//-2001.12505034/2;//-1200.;
   p->ixmin = 0;
   p->iymin = 0;
-  p->ixmax = 600;//int((p->xmax-p->xmin)/p->hx);
-  p->iymax = 480;//int((p->ymax-p->ymin)/p->hy);
+  p->ixmax = 1200;//int((p->xmax-p->xmin)/p->hx);
+  p->iymax = 960;//int((p->ymax-p->ymin)/p->hy);
 //  p->ixmax = 600;//int((p->xmax-p->xmin)/p->hx);
 //  p->iymax = 480;//int((p->ymax-p->ymin)/p->hy);
-  p->hx =  5;//3000./p->ixmax;//5.0844;//4.;//2.;			//step along x 
-  p->hy =  5;//2400./p->iymax;//4.99033;
-//  p->hx =  3000./p->ixmax;//5.0844;//4.;//2.;			//step along x 
+  p->hx =  2.5;//3000./p->ixmax;//5.0844;//4.;//2.;			//step along x
+  p->hy =  2.5;//2400./p->iymax;//4.99033;
+//  p->hx =  3000./p->ixmax;//5.0844;//4.;//2.;			//step along x
 //  p->hy =  2400./p->iymax;//4.99033;
-//  p->hx =  2038.85309382/(p->ixmax+1);//5.0844;//4.;//2.;			//step along x 
+//  p->hx =  2038.85309382/(p->ixmax+1);//5.0844;//4.;//2.;			//step along x
 //  p->hy =  2001.12505034/(p->iymax+1);//4.99033;
-  p->iz_ins1 = (int) (p->t_ins/ p->hz_ins); 
-  p->iz_ins2 = p->iz_ins1 + (int) (p->t_split_gate / p->hz_gate);	//46; 
+  p->iz_ins1 = (int) (p->t_ins/ p->hz_ins);
+  p->iz_ins2 = p->iz_ins1 + (int) (p->t_split_gate / p->hz_gate);	//46;
   p->izc = p->iz_ins2 + (int) (p->t_GaAs / p->hz_gate);	//50;
   p->iz1 = p->izc + (int) (p->t1_AlGaAs / p->hz);	//60;
   p->iz2 = p->iz1 + (int) (p->t_w / p->hzw);	//60;
