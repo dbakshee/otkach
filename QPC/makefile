@@ -2,7 +2,7 @@ PROJ = sushkov
 CXX = icpc
 # #XARCH=-QxHOST
 MICFLAGS = -mmic
-CXXFLAGS = -Wall -fopenmp -lrt -O2 -march=core-avx2
+CXXFLAGS = -Wall -fopenmp -lrt -O2 # -march=core-avx2
 # # -opt-report -vec-report
 LOGIT = 2>&1 | tee last.log ; test 0 -eq $$PIPESTATUS
 
