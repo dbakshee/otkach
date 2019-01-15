@@ -18,20 +18,7 @@
 #else
 #define ZI "%zi"
 #endif
-/*
-#include <stdio.h>
-//#include <malloc.h>
-#include <math.h>
-#include <assert.h>
-#include <xmmintrin.h>
-#include "ringnew2.h"
 
-#if defined(_WIN32)
-#define ZI "%Ii"
-#else
-#define ZI "%zi"
-#endif
-*/
 inline int splitGate(real xx, real yy)
 {
   real Lsg=600;
@@ -108,15 +95,14 @@ int compute_host(real *u0,      /* U(n1,n2,n3) */
     real dNs = 0;//-1.875;// 10^11 cm^-2
     real AA1 = 4.*M_PI*4.803*4.803*1e-4/1.6;
     real efermi = 0;
-    real ebandoffset = 0.152;//0.7*0.46;//0.275*2./3.;//0.24;
-    real me = 0.067;
-//    real mh = 0.3;
+    real ebandoffset = 0.152;//for holes//for electrons 0.24;
+    real mh = 0.3;
     real dw = params->t_w;//16.;//20;//5;
-    real E_1=(M_PI/dw)*(M_PI/dw)*0.0381/me;//0.02;//0.01;
+    real E_1=(M_PI/dw)*(M_PI/dw)*0.0381/mh;//0.02;//0.01;
     real delta=0.26;
-    real Eg=1.5;
+    real Eg=1.52;
     real fn2D = 10.*AA1/eps_gaas;
-    real A4 = 324.*me/0.07766*AA1/eps_gaas;
+    real A4 = 324.*mh/0.07766*AA1/eps_gaas;
     real LL = 1000;
     int NX = params->NX;
     int NY = params->NY;
@@ -140,8 +126,8 @@ int compute_host(real *u0,      /* U(n1,n2,n3) */
     real ns=-7.5;//0;//0;//3.43-nimp;//1.77;//0.65;//73;//525;
     real Aimp = 0;//1000*AA1/eps_gaas/hz/hx/hy;// вместо Asi1
     real s=1./(hx*hy);
-    real Utg=-Vtg+delta;//Eg/2;//delta+0.05;//+0.01;//Eg/2;
-    real Usg=-Vsg+delta;//Eg/2;//delta;//Eg/2;
+    real Utg=-Vtg+delta-Eg;//Eg/2;//delta+0.05;//+0.01;//Eg/2;
+    real Usg=-Vsg+delta-Eg;//Eg/2;//delta;//Eg/2;
     real c_sh_U=0;//6;//5.84853;// шунтирующая емкость поверхностных состояний по отношению к U_new()-Delta
     real hxhyhz = 1. / (2. * hzhz + 2. * hxhx + 2. * hyhy);
     real hzhzw = 1. / (hzw*hzw);
@@ -159,7 +145,7 @@ int compute_host(real *u0,      /* U(n1,n2,n3) */
 #pragma simd
              for (int i = ixmin; i <= ixmax; ++i)
              {
-              Ez0(i,j) = u0(i,j,int(iz1+0.5*dw/hzw))+E_1; //  !!!!!!!!!!!!!!!!
+              Ez0(i,j) = u0(i,j,int(iz1+0.5*dw/hzw))-E_1; //  !!!!!!!!!!!!!!!!
              }
         }
 
@@ -172,7 +158,7 @@ int compute_host(real *u0,      /* U(n1,n2,n3) */
             for (int i = ixmin; i <= ixmax; ++i)
             {
                 u0(i, j, 0) = Utg;
-                u0(i,j,izb)=u0(i, j,izb-1);//-hzb*delta/LL;//(0.5*Eg)/LL;  ?????????????????
+                u0(i,j,izb)=u0(i, j,izb-1)-hzb*0.2/LL;//(0.5*Eg)/LL;  ?????????????????
             }
         }
         dt[0] = _rdtsc()-dt[0];
@@ -208,7 +194,7 @@ int compute_host(real *u0,      /* U(n1,n2,n3) */
                        int j=iymin;
                        real x=hx*i+xmin;
                        real y=hy*j+ymin;
-                       real dU1=-1000*s*0.25*(aimp1(ixmin,iymin)+aimp1(ixmin,iymax)+aimp1(ixmax,iymax)+aimp1(ixmax,iymin))*(0.1*1.602/8.85);
+                       real dU1=-1000*s*(aimp1(ixmin,iymin)+aimp1(ixmin,iymax)+aimp1(ixmax,iymax)+aimp1(ixmax,iymin))*(0.1*1.602/8.85);
                       if(!splitGate(x,y))
                         {
                         u0(i, j, kk) = (4.*(u0(i, j, kk + 1)*eps_gaas/hz + u0(i, j, kk - 1)*eps_ins/hz_gate)
@@ -279,30 +265,30 @@ int compute_host(real *u0,      /* U(n1,n2,n3) */
         {
             real zz = (k-iz1)*hzw;
             real z1 = f3*sin(M_PI*zz/dw);
-                u0(ixmin, iymin, k) = ((u0(ixmin, iymin, k - 1) + u0(ixmin, iymin, k + 1)) * hzhzw
+                 u0(ixmin, iymin, k) = ((u0(ixmin, iymin, k - 1) + u0(ixmin, iymin, k + 1)) * hzhzw
                                        +      (u0(ixmax - 1, iymin, k) + u0(ixmin + 1, iymin, k)) * hxhx
                                        +      (u0(ixmin, iymax - 1, k) + u0(ixmin, iymin + 1, k)) * hyhy) * hxhyhzw;
                        real dE = efermi-Ez0(ixmin, iymin);
-                       if(dE>0) u0(ixmin, iymin,k) = u0(ixmin, iymin,k) + z1 * dE;
+                       if(dE<0) u0(ixmin, iymin,k) = u0(ixmin, iymin,k) + z1 * dE;
 
                 u1(ixmin, iymin, k) = u0(ixmin, iymin, k);
                 u0(ixmin, iymax, k) = ((u0(ixmin, iymax, k - 1) + u0(ixmin, iymax, k + 1)) * hzhzw
                                        +      (u0(ixmax - 1, iymax, k) + u0(ixmin + 1, iymax, k)) * hxhx
                                        +      (u0(ixmin, iymax - 1, k) + u0(ixmin, iymin + 1, k)) * hyhy) * hxhyhzw;
                        dE = efermi-Ez0(ixmin, iymax);
-                       if(dE>0) u0(ixmin, iymax,k) = u0(ixmin, iymax,k) + z1 * dE;
+                       if(dE<0) u0(ixmin, iymax,k) = u0(ixmin, iymax,k) + z1 * dE;
                 u1(ixmin, iymax, k) = u0(ixmin, iymax, k);
                 u0(ixmax, iymax, k) = ((u0(ixmax, iymax, k - 1) + u0(ixmax, iymax, k + 1)) * hzhzw
                                        +      (u0(ixmax - 1, iymax, k) + u0(ixmin + 1, iymax, k)) * hxhx
                                        +      (u0(ixmax, iymax - 1, k) + u0(ixmax, iymin + 1, k)) * hyhy) * hxhyhzw;
                        dE = efermi-Ez0(ixmax, iymax);
-                       if(dE>0) u0(ixmax, iymax,k) = u0(ixmax, iymax,k) + z1 * dE;
+                       if(dE<0) u0(ixmax, iymax,k) = u0(ixmax, iymax,k) + z1 * dE;
                 u1(ixmax, iymax, k) = u0(ixmax, iymax, k);
                 u0(ixmax, iymin, k) = ((u0(ixmax, iymin, k - 1) + u0(ixmax, iymin, k + 1)) * hzhzw
                                        +      (u0(ixmax - 1, iymin, k) + u0(ixmin + 1, iymin, k)) * hxhx
                                        +      (u0(ixmax, iymax - 1, k) + u0(ixmax, iymin + 1, k)) * hyhy) * hxhyhzw;
                        dE = efermi-Ez0(ixmax, iymin);
-                       if(dE>0) u0(ixmax, iymin,k) = u0(ixmax, iymin,k) + z1 * dE;
+                       if(dE<0) u0(ixmax, iymin,k) = u0(ixmax, iymin,k) + z1 * dE;
                 u1(ixmax, iymin, k) = u0(ixmax, iymin, k);
         }
 //----------------------
@@ -496,13 +482,13 @@ int compute_host(real *u0,      /* U(n1,n2,n3) */
                                        +      (u0(ixmax - 1, j, k) + u0(ixmin + 1, j, k)) * hxhx
                                        +      (u0(ixmin, j - 1, k) + u0(ixmin, j + 1, k)) * hyhy) * hxhyhzw;
                        real dE = efermi-Ez0(ixmin,j);
-                       if(dE>0) u0(ixmin,j,k) = u0(ixmin,j,k) + z1 * dE;
+                       if(dE<0) u0(ixmin,j,k) = u0(ixmin,j,k) + z1 * dE;
                        u1(ixmin, j, k) = u0(ixmin, j, k);
                 u0(ixmax, j, k) = ((u0(ixmax, j, k - 1) + u0(ixmax, j, k + 1)) * hzhzw
                                        +      (u0(ixmax - 1, j, k) + u0(ixmin + 1, j, k)) * hxhx
                                        +      (u0(ixmax, j - 1, k) + u0(ixmax, j + 1, k)) * hyhy) * hxhyhzw;
                        dE = efermi-Ez0(ixmax,j);
-                       if(dE>0) u0(ixmax,j,k) = u0(ixmax,j,k) + z1 * dE;
+                       if(dE<0) u0(ixmax,j,k) = u0(ixmax,j,k) + z1 * dE;
                 u1(ixmax, j, k) = u0(ixmax, j, k);
             }
         }
@@ -519,13 +505,13 @@ int compute_host(real *u0,      /* U(n1,n2,n3) */
                                        +      (u0(i - 1, iymin, k) + u0(i + 1, iymin, k)) * hxhx
                                        +      (u0(i, iymax - 1, k) + u0(i, iymin + 1, k)) * hyhy) * hxhyhzw;
                        real dE = efermi-Ez0(i,iymin);
-                       if(dE>0) u0(i,iymin,k) = u0(i,iymin,k) + z1 * dE;
+                       if(dE<0) u0(i,iymin,k) = u0(i,iymin,k) + z1 * dE;
                 u1(i, iymin, k) = u0(i, iymin, k);
                 u0(i, iymax, k) = ((u0(i, iymax, k - 1) + u0(i, iymax, k + 1)) * hzhzw
                                        +      (u0(i - 1, iymax, k) + u0(i + 1, iymax, k)) * hxhx
                                        +      (u0(i, iymax - 1, k) + u0(i, iymin + 1, k)) * hyhy) * hxhyhzw;
                        dE = efermi-Ez0(i,iymax);
-                       if(dE>0) u0(i,iymax,k) = u0(i,iymax,k) + z1 * dE;
+                       if(dE<0) u0(i,iymax,k) = u0(i,iymax,k) + z1 * dE;
                 u1(i, iymax, k) = u0(i, iymax, k);
             }
         }
@@ -755,7 +741,7 @@ int compute_host(real *u0,      /* U(n1,n2,n3) */
                                    +      (u0(i - 1, j, k) + u0(i + 1, j, k)) * hxhx
                                    +      (u0(i, j - 1, k) + u0(i, j + 1, k)) * hyhy) * hxhyhzw;
                        real dE = efermi-Ez0(i,j);
-                       if(dE>0) u1(i,j,k) = u1(i,j,k) + z1 * dE;
+                       if(dE<0) u1(i,j,k) = u1(i,j,k) + z1 * dE;
                 }
             }
         }

@@ -209,7 +209,7 @@ write3_to_file (const char *fname, real * u0, int i, int j, struct Params *param
   for (int k = izc; k <= iz1; ++k)
   {
     z = z1 + hz * (k - izc);
-    fprintf (o, "%.8g %.8g\n", z, u0 (i, j, k)+0.152);
+    fprintf (o, "%.8g %.8g\n", z, u0 (i, j, k)-0.152);
   }
   z1 = z;
   for (int k = iz1; k <= iz2; ++k)
@@ -221,7 +221,7 @@ write3_to_file (const char *fname, real * u0, int i, int j, struct Params *param
   for (int k = iz2; k <= izb; ++k)
   {
     z = z1 + hzb * (k - iz2);
-    fprintf (o, "%.8g %.8g\n", z, u0 (i, j, k)+0.152);
+    fprintf (o, "%.8g %.8g\n", z, u0 (i, j, k)-0.152);
   }
   fclose (o);
 }
@@ -300,7 +300,7 @@ write2_to_file (const char *fname, real * Ez0, struct Params *params)
   int NY = params->NY;
   real hx = params->hx;
   real hy = params->hy;
-  int iy0 = 1;			//3*50;//10*50;//10*17;//15*17;//68
+  int iy0 = 0;			//3*50;//10*50;//10*17;//15*17;//68
   fprintf (o, "%3i  %.8g %.8g\n", ixmax - ixmin - 2 * iy0 + 1, 0., hx * (ixmax - ixmin - 2 * iy0));
   fprintf (o, "%3i  %.8g %.8g\n", iymax - iymin - 2 * iy0 + 1, 0., hy * (iymax - iymin - 2 * iy0));
 
@@ -308,9 +308,9 @@ write2_to_file (const char *fname, real * Ez0, struct Params *params)
   double us=0;
   double coef = 324.*0.067/0.07766;
   int isum = 0;
-  for (int i = ixmin+20; i <= ixmax-20; ++i)
+  for (int i = ixmin; i <= ixmax; ++i)
   {
-    for (int j = iymin+20; j < iymax-20; ++j)
+    for (int j = iymin; j < iymax; ++j)
     {
       double ueff = -Ez0 (i, j);
       double  n=0;
@@ -325,9 +325,9 @@ write2_to_file (const char *fname, real * Ez0, struct Params *params)
       n_av=n_av/isum;
       us=us/isum;
   double rms = 0;
-  for (int i = ixmin+20; i < ixmax-20; ++i)
+  for (int i = ixmin; i < ixmax; ++i)
   {
-    for (int j = iymin+20; j < iymax-20; ++j)
+    for (int j = iymin; j < iymax; ++j)
     {
       double ueff = -Ez0 (i, j);
       double du   = ueff-us;
@@ -336,11 +336,9 @@ write2_to_file (const char *fname, real * Ez0, struct Params *params)
    }
    rms = sqrt(rms/isum);
    fprintf(o,"%lg %lg %lg\n",n_av, us, rms);
-  for (int j = iymin; j <= iymax; ++j)
-//  for (int j = iymin+20; j < iymax-20; ++j)
+  for (int i = ixmin; i <= ixmax; ++i)
   {
-//    for (int i = ixmin+20; i < ixmax-20; ++i)
-    for (int i = ixmin; i <= ixmax; ++i)
+    for (int j = iymin; j <= iymax; ++j)
     {
       fprintf(o,"%lg ", Ez0 (i, j));
     }
@@ -486,7 +484,7 @@ writex_to_file (const char *fname, real * Ez0, int i, struct Params *params)
   assert (o);
 //  fprintf (o, "Ueff along y at x_i=%.8g\n", i * hx);
   double n=0;
-  double coef = 324.*0.067/0.07766;
+  double coef = 324.*0.3/0.07766;
   for (int j = iymin; j <= iymax; ++j)
   {
     real ueff = Ez0 (i, j);
@@ -514,7 +512,7 @@ writey_to_file (const char *fname, real * Ez0, int i, struct Params *params)
   assert (o);
 //  fprintf (o, "Ueff along x at y_i=%.8g\n", i * hy);
   double n=0;
-  double coef = 324.*0.067/0.07766;   //542.364
+  double coef = 324.*0.3/0.07766;
   for (int j = ixmin; j <= ixmax; ++j)
   {
     real ueff = Ez0 (j, i);
@@ -623,30 +621,34 @@ damn_compute (const char *dtfilename)
 //    if (dtfilename)
   if (1)
   {
-      read_dt("pot_n_imp7i5_500Kn.dt",u0,params); //  uniform 50K
+//      read_dt("pot_n_imp7i5_50K_3.dt",u0,params); //  uniform 50K
+//pot_ns7i5_500K_hm.dt
 
+    read_dt("pot_ns7i5_500K_hm_f_mVsg0i7.dt",u0,params);
+//      read_dt("pot_ns7i5_50K_h.dt",u0,params);
       double us=0;
       for (int j = iymin; j <= iymax; ++j)
       {
 	for (int i = ixmin; i <= ixmax; ++i)
 	{
-	  Ez0(i,j)=u0 (i, j, iz1+8 )+0.0219;
+	  Ez0(i,j)=u0(i, j, iz1+8 )-0.00489625;//holes
+//	  Ez0(i,j)=u0 (i, j, iz1+8 )+0.0219;
           us = us+Ez0(i,j);
 	}
       }
       us=us/NX/NY;
-      printf ("us=%13.6g\n", us);
-      write2_to_file ("ueff_500K.dat", Ez0, &params0);
+//      printf ("us=%13.6g\n", us);
+//      write2_to_file ("ueff_500K_3.dat", Ez0, &params0);
       int ix0 = 0;
-      writex_to_file ("Uofy_500K_c.dat", Ez0, (NX+1)/2, &params0);
-      writex_to_file ("Uofy_500K_0.dat", Ez0, ix0, &params0);
-      writex_to_file ("Uofy_500K_xmax.dat", Ez0, ixmax, &params0);
-      write3_to_file ("Uofz_uni_2deg_500K.dat", u1, 5, 100, &params0);
-      write3_to_file ("Uofz_uni_gate_500K.dat", u1, 100, 180, &params0);
+//      writex_to_file ("Uofy_500K_c_3.dat", Ez0, (NX+1)/2, &params0);
+//      writex_to_file ("Uofy_500K_0_3.dat", Ez0, ix0, &params0);
+//      writex_to_file ("Uofy_500K_xmax_3.dat", Ez0, ixmax, &params0);
+//      write3_to_file ("Uofz_uni_2deg_500K_3.dat", u1, 5, 100, &params0);
+//      write3_to_file ("Uofz_uni_gate_500K_3.dat", u1, 100, 180, &params0);
       int iy0 = 0;
-      writey_to_file ("Uofx_500K_c.dat", Ez0, (NY+1)/2, &params0);
-      writey_to_file ("Uofx_500K_0.dat", Ez0, iy0, &params0);
-      writey_to_file ("Uofx_500K_ymax.dat", Ez0, iymax, &params0);
+//      writey_to_file ("Uofx_500K_c_3.dat", Ez0, (NY+1)/2, &params0);
+//      writey_to_file ("Uofx_500K_0_3.dat", Ez0, iy0, &params0);
+//      writey_to_file ("Uofx_500K_ymax_3.dat", Ez0, iymax, &params0);
 
     //  exit(0);
   }
@@ -687,11 +689,13 @@ damn_compute (const char *dtfilename)
   int imp1seed=37;//11;//17;//11;//71117;//11;//71117;
   srand(imp1seed);
   real nimp=7.5;//3;//1;//3;//3;//1;
-  int nimpur=45114;//0.001*nimp*(ixmax-ixmin)*(iymax-iymin)*hx*hy;
+//  int nimpur=45114;//h=2.5;//0.001*nimp*(ixmax-ixmin)*(iymax-iymin)*hx*hy;
 //  setimp(abs(nimpur),aimp1,ixmin,ixmax,iymin,iymax);
 //impn7i5_500K.dat
 //impn7i5_500K_2deg.dat
-  readimp("imp_500K.dat", aimp1, nimpur, ixmin, ixmax, iymin, iymax);
+//impn7i5_500Ka.dat
+  int nimpur=4782;
+  readimp("impn7i5_500K_f.dat", aimp1, nimpur, ixmin, ixmax, iymin, iymax);
 //  readimp("impn7i5_500K_2deg.dat", aimp1, nimpur, ixmin, ixmax, iymin, iymax);
 //  int nimpur=4080;//0.001*nimp*(ixmax-ixmin)*(iymax-iymin)*hx*hy;
 //  readimp("impn1_5K_new.dat", aimp1, nimpur, ixmin, ixmax, iymin, iymax);
@@ -727,13 +731,13 @@ damn_compute (const char *dtfilename)
     if (1)			/* write some potential profiles */
     {
       int ix0 = (NX+1)/2;
-      writex_to_file ("Uofy_500K.dat", Ez0, ix0, &params0);
-      writex_to_file ("Uofy_0_500K.dat", Ez0, 0, &params0);
-      write3_to_file ("Uofz_2deg_500K.dat", u1, 5, 100, &params0);
-      write3_to_file ("Uofz_gate_500K.dat", u1, 100, 180, &params0);
+      writex_to_file ("Uofy_500K_h_f_mVsg0i8.dat", Ez0, ix0, &params0);
+      writex_to_file ("Uofy_0_500K_h_f_mVsg0i8.dat", Ez0, 0, &params0);
+      write3_to_file ("Uofz_2deg_500K_h_f_mVsg0i8.dat", u1, 5, 100, &params0);
+      write3_to_file ("Uofz_gate_500K_h_f_mVsg0i8.dat", u1, 100, 180, &params0);
       int iy0 = (NY+1)/2;
-      writey_to_file ("Uofx_500K.dat", Ez0, iy0, &params0);
-      writey_to_file ("Uofx_0_500K.dat", Ez0, 0, &params0);
+      writey_to_file ("Uofx_500K_h_f_mVsg0i8.dat", Ez0, iy0, &params0);
+      writey_to_file ("Uofx_0_500K_h_f_mVsg0i8.dat", Ez0, 0, &params0);
     }
 
     /* look for max difference between u0 and u1 */
@@ -769,11 +773,11 @@ damn_compute (const char *dtfilename)
 
     if (it>itlim)			/* save breakpoint file dt */
     {
-      write2_to_file ("ueff_500K.dat", Ez0, &params0);
+      write2_to_file ("ueff_500K_h_f_mVsg0i8.dat", Ez0, &params0);
       itn=itn+1;
       itlim = 1000*itn;
       size_t iter = it;
-      FILE *f = fopen ("pot_n_imp7i5_500Kpar.dt", "wb");
+      FILE *f = fopen ("pot_ns7i5_500K_hm_f_mVsg0i8.dt", "wb");
       assert (f);
       size_t bytes = sizeof (iter) + sizeof (real) * NX * NY * NZ;
       fwrite (&bytes, sizeof (bytes), 1, f);
@@ -791,10 +795,11 @@ damn_compute (const char *dtfilename)
   free_map3d (u1_3);
 }
 
+/*
 int
 main (int argc, char *argv[])
 {
-  /* process command line arguments */
+  // process command line arguments
   if (argc < 2)
   {
     printf ("Please say something like: sushkov.exe something\n");
@@ -804,24 +809,36 @@ main (int argc, char *argv[])
   printf("COMPILED FOR MIC\n");
 #endif
   printf ("Will use %i openmp threads\n", omp_get_max_threads ());
+  damn_compute (argv[1]);	// if argv[1] names a real file, it will be read as a dt file
+}
+*/
+
+int
+main (int argc, char *argv[])
+{
+  /* process command line arguments */
+  if (argc < 2)
+  {
+    printf ("Please say something like: sushkov.exe something\n");
+    exit (1);
+  }
+  printf ("Will use %i openmp threads\n", omp_get_max_threads ());
   damn_compute (argv[1]);	/* if argv[1] names a real file, it will be read as a dt file */
 }
-
 
 void
 initParams (struct Params *p)
 {
   //sizes and layer thicknesses in nm
-
-  p->t_ins = 25;//30;		//60.;//25.;//30;//50.;          // space between top gate and split gate
-  p->t_split_gate = 40;//30;		//50.;//20.;//10.;      //thickness of split gate
-  p->t_GaAs = 10;		//50;//50;//50;//50;//100;// 50;//30.;         //distance between split gate and 2DEG = AlGaAs layer thickness
-  p->t1_AlGaAs = 27;		//50;//50;//50;//50;//100;// 50;//30.;         //distance between split gate and 2DEG = AlGaAs layer thickness
-  p->t_w = 16;		//50;//50;//50;//50;//100;// 50;//30.;         //distance between split gate and 2DEG = AlGaAs layer thickness
-  p->t2_AlGaAs = 100;		//50;//50;//50;//50;//100;// 50;//30.;         //distance between split gate and 2DEG = AlGaAs layer thickness
-  p->t2_GaAs = 100.;		//100.;//70;//30.;            // GaAs layer thickness
-  p->Vsg = -0.5;//-0.55;//0.45;//-0.2;//-0.6;//-0.75;//0.1;//-0.7;//-0.7;//-0.4;//-0.2;//-0.362;//-0.661;//-0.525;//-0.853+0.0525;//-0.72-0.2+0.0675;//-0.46;//-0.50-3*0.0579;//0.181;//3*0.06;//-0.6;//-0.9;//-1.3;//-1.1;//-1.;//-1.1;//-1.1;//-1.0;//-1.2;			//+5;
-  p->Vtg = 1.06;//-1.418;//-1.4+3*0.05;//-1.22;//+1;//-1.1;//+0.1;//2.5;//1.4;//1.3;//1.20;//1;4.;			//5.;//-5.;
+  p->t_ins = 25;
+  p->t_split_gate = 40;
+  p->t_GaAs = 10;	//distance between split gate and 2DEG = AlGaAs layer thickness
+  p->t1_AlGaAs = 50;	         //distance between split gate and 2DEG = AlGaAs layer thickness
+  p->t_w = 16;		//distance between split gate and 2DEG = AlGaAs layer thickness
+  p->t2_AlGaAs = 77;  //distance between split gate and 2DEG = AlGaAs layer thickness
+  p->t2_GaAs = 100.;	// GaAs layer thickness
+  p->Vsg = -0.8;//(-0.6--this is f)
+  p->Vtg = -1.091;
 //0-- -0.55;
 //0a-- -.525 definition
   //grid parameters (nm)
@@ -830,29 +847,22 @@ initParams (struct Params *p)
   p->hzw = 1;//0.5;			// step along z in well
   p->hz_gate  = 1.;		//2.;  // step along around gate
   p->hz_ins = 1.;		//2.;  // step along z in insulator
-//    xmax=2038.85309382;//2000.;
-//    ymax=2001.12505034;//2000.;
-
-  p->xmax= 1500;//2038.85309382/2;//1200.;
-  p->ymax= 1200;//2001.12505034/2;//1200.;
-  p->xmin= -1500;//-2038.85309382/2;//-1200.;
-  p->ymin= -1200;//-2001.12505034/2;//-1200.;
+  p->xmax= 500;//2038.85309382/2;//1200.;
+  p->ymax= 500;//2001.12505034/2;//1200.;
+  p->xmin= -500;//-2038.85309382/2;//-1200.;
+  p->ymin= -500;//-2001.12505034/2;//-1200.;
+  p->hx =  5;//step along x
+  p->hy =  5;//step along y
 //  p->xmax= 1500;//2038.85309382/2;//1200.;
 //  p->ymax= 1200;//2001.12505034/2;//1200.;
 //  p->xmin= -1500;//-2038.85309382/2;//-1200.;
 //  p->ymin= -1200;//-2001.12505034/2;//-1200.;
+//  p->hx =  2.5;//step along x
+//  p->hy =  2.5;//step along y
+  p->ixmax = int((p->xmax-p->xmin)/p->hx);
+  p->iymax = int((p->ymax-p->ymin)/p->hy);
   p->ixmin = 0;
   p->iymin = 0;
-  p->ixmax = 1200;//int((p->xmax-p->xmin)/p->hx);
-  p->iymax = 960;//int((p->ymax-p->ymin)/p->hy);
-//  p->ixmax = 600;//int((p->xmax-p->xmin)/p->hx);
-//  p->iymax = 480;//int((p->ymax-p->ymin)/p->hy);
-  p->hx =  2.5;//3000./p->ixmax;//5.0844;//4.;//2.;			//step along x
-  p->hy =  2.5;//2400./p->iymax;//4.99033;
-//  p->hx =  3000./p->ixmax;//5.0844;//4.;//2.;			//step along x
-//  p->hy =  2400./p->iymax;//4.99033;
-//  p->hx =  2038.85309382/(p->ixmax+1);//5.0844;//4.;//2.;			//step along x
-//  p->hy =  2001.12505034/(p->iymax+1);//4.99033;
   p->iz_ins1 = (int) (p->t_ins/ p->hz_ins);
   p->iz_ins2 = p->iz_ins1 + (int) (p->t_split_gate / p->hz_gate);	//46;
   p->izc = p->iz_ins2 + (int) (p->t_GaAs / p->hz_gate);	//50;
@@ -861,8 +871,8 @@ initParams (struct Params *p)
   p->izb = p->iz2 + (int) (p->t2_AlGaAs / p->hzb);	//70;
 
   p->eps_gaalas = 12.1;		//12.2;        /* GaAlAs dielectric constant */
-  p->eps_gaas = 13;//13.2;		// GaAs dielectric constant
-  p->eps_ins = 8;//4.35;		//8.;//3.;          // insulator dielectric constant
+  p->eps_gaas = 13;		// GaAs dielectric constant
+  p->eps_ins = 8;	//8.;//3.;          // insulator dielectric constant
 
   p->NX = p->ixmax - p->ixmin + 1;
   p->NY = p->iymax - p->iymin + 1;
