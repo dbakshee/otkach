@@ -32,12 +32,16 @@ def make_fft(dosbin, ampbin, phabin):
         need_header = True
         lenfft = lenob // 2 + 1
         for i, e in enumerate(tqdm.tqdm(es)):
-            f = np.fft.rfft(dos[i])[:lenfft//5]
+            f = np.fft.rfft(dos[i])
+            k = np.array(range(len(f))) / (obs[-1] - obs[0])
             famp = np.log(np.abs(f))
-            fpha = np.angle(f)
+            fpha = np.mod(np.angle(f), np.pi * 2)
+            part = len(f) # int(5 * len(f) / k[-1])
+            f = f[:part]
+            k = k[:part]
+            famp = famp[:part]
+            fpha = fpha[:part]
             if need_header:
-                k = np.array(range(len(f))) / (len(f) * (obs[-1] - obs[0])) * 2 * math.pi
-                assert len(k) == len(famp)
                 amp.write(struct.pack(f'{len(k)+1}f', len(k), *k))
                 pha.write(struct.pack(f'{len(k)+1}f', len(k), *k))
                 need_header = False
@@ -46,7 +50,8 @@ def make_fft(dosbin, ampbin, phabin):
         logging.info('Done')
 
 if __name__ == '__main__':
-    ampbin=f'w02/w02_fftdos_amp.bin'
-    phabin=f'w02/w02_fftdos_pha.bin'
+    wxx='w02'
+    ampbin=f'{wxx}/{wxx}a_fftdos_amp.bin'
+    phabin=f'{wxx}/{wxx}a_fftdos_pha.bin'
     logging.info(f'Creating {ampbin} {phabin}')
-    make_fft('w02/w02_dos.bin', ampbin, phabin)
+    make_fft(f'{wxx}/{wxx}a_dos.bin', ampbin, phabin)

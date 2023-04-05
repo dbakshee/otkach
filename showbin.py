@@ -31,7 +31,9 @@ def showbin(bin):
             vs.append(v)
             if i < 5:
                 logging.info(f'Y{i}={y}: {v[0]} {v[1]} ... {v[-1]}')
-        logging.info(f'Got {len(ys)} y-values {ys[0]} {ys[1]} ... {ys[-1]}')
+        #logging.info(f'Got {len(ys)} y-values {ys[0]} {ys[1]} ... {ys[-1]}')
+        logging.info(f'Got {len(ys)} y-values {ys[0]:.5} {ys[1]:.5} ... {ys[-1]:5} step {(ys[-1]-ys[0])/(len(ys)-1)}')
+        print([f'{y:.4}' for y in ys])
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()

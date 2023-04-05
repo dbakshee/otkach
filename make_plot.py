@@ -76,15 +76,34 @@ def make_bin_map(dbfile, prop, binout):
             req = f"SELECT ob, {prop} FROM MAGBREAK WHERE e == {e}"
             row = sorted(c.execute(req).fetchall())
             vals = list(zip(*row))[1]
-            o.write(struct.pack(f'{len(obs)+1}f', e, *vals))
+            try:
+                o.write(struct.pack(f'{len(obs)+1}f', e, *vals))
+            except Exception as e:
+                logging.critical(f"FATAL ERROR for e={e} len(vals)={len(vals)}")
+                raise e
 
+
+def check_db(dbfile):
+    with db.connect(dbfile) as con:
+        c = con.cursor()
+        es = sorted(c.execute("SELECT DISTINCT e FROM MAGBREAK").fetchall())
+        obs = sorted(c.execute("SELECT DISTINCT ob FROM MAGBREAK").fetchall())
+        logging.info(f'Got {len(es)} energies times {len(obs)} obs')
+        for e, in [(8,)]:
+            req = f"SELECT ob, dos FROM MAGBREAK WHERE e == {e}"
+            row = sorted(c.execute(req).fetchall())
+            vals = list(zip(*row))[1]
+            logging.info(f"{e}: {len(vals)} values")
+            assert len(vals) == len(obs)
+    exit(1)
 
 if __name__ == '__main__':
+    dbfile = 'w02/w02a.db'
     config_logging()
     for prop in 'dos rxy21 rxx rxy12 r2t22 r2t11 ryy'.split():
-        binfile = f'w02/w02_{prop}.bin'
+        binfile = f'w02/w02a_{prop}.bin'
         if os.path.exists(binfile):
             logging.info(f'Skip {binfile} - already there')
             continue
         logging.info(f'Creating {binfile}')
-        make_bin_map('w02/w02.db', prop, binfile)
+        make_bin_map(dbfile, prop, binfile)
