@@ -88,8 +88,8 @@ class Main(object):
         lmin = 0 - 100
         lmax = int((dy - cy) / (ba * np.sqrt(3) / 2.0)) + 100
         ans = dict()
-        for k in range(kmin, kmax - kmin):
-            for l in range(lmin, lmax - lmin):
+        for k in range(kmin, kmax):
+            for l in range(lmin, lmax):
                 x, y = b1[0] * k + b2[0] * l, b1[1] * k + b2[1] * l
                 if not cx <= x <= dx:
                     continue
