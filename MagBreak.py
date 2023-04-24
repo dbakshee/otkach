@@ -6,6 +6,7 @@ import argparse
 import json
 import kwant
 import logging
+import matplotlib as mpl
 import numpy as np
 import os
 import re
@@ -59,6 +60,13 @@ class Main(object):
         self.POT = dict()
         self.BUMPS = self.bump_locations(args)
         self.syst = self.make_system(args)
+    def plot(self, file=None):
+        args = self.args
+        params = SimpleNamespace(vr=args.vr, w0=args.w0, salt=args.salt)
+        logging.info(f'plot: Collecting potential')
+        pot = [self.syst.hamiltonian(i, i, params) for i, _ in enumerate(self.syst.sites)]
+        logging.info(f'plot: Plotting potential')
+        kwant.plot(self.syst, site_symbol='o', cmap=mpl.colormaps['seismic'], site_color=pot, site_size=0.4, hop_lw=0, file=file)
 
     def bump_locations(self, args):
         L, W, a, overlap = args.L, args.W, args.a, 80 * 2
@@ -130,8 +138,8 @@ class Main(object):
             return -t * exp(-0.5j * hmag * (xi - xj) * (yi + yj))
 
         def potential(site, params):
-            w0 = getattr(params, 'w0', 0)
-            salt = str(getattr(params, 'salt', 'pepper'))
+            w0 = params.w0
+            salt = params.salt
             vr = params.vr
             x, y = site.pos
             #    v0 = 0.78 * w0 #L=160nm
@@ -157,7 +165,7 @@ class Main(object):
             return 4 * t + self.POT[site]
 
         def potential_lead(site, params):
-            w0 = getattr(params, 'w0', 0)
+            w0 = params.w0
             return 4 * t - 1.5 * 3.116 * w0  # 3cos
 
         syst = kwant.Builder()
@@ -265,6 +273,7 @@ class Main(object):
 
 def main(args):
     model = Main(args)
+    model.plot(file='model.png')
     if args.mpi_rank == 0:
         model.check()
         logging.info(
