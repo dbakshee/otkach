@@ -320,7 +320,7 @@ def get_rank_size():
 
 if __name__ == '__main__':
     config_logging()
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('-E', type=float,
                         help='Energy',
                         required=True,
@@ -347,19 +347,19 @@ if __name__ == '__main__':
                         default=8.0,
                         )
     parser.add_argument('-W', type=int,
-                        help='Width of the system, sites (default: 500)',
+                        help='Width of the system, sites',
                         default=500,
                         )
     parser.add_argument('-L', type=int,
-                        help='Length of the system, sites (default: 500)',
+                        help='Length of the system, sites',
                         default=500,
                         )
     parser.add_argument('-Wtop', type=int,
-                        help='Width of top leads, sites (default: 70)',
+                        help='Width of top leads, sites',
                         default=70,
                         )
     parser.add_argument('-Wbot', type=int,
-                        help='Width of bottom leads, sites (default: 70)',
+                        help='Width of bottom leads, sites',
                         default=70,
                         )
     parser.add_argument('-t', type=float,
