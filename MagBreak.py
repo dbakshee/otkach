@@ -10,6 +10,7 @@ import matplotlib as mpl
 import numpy as np
 import os
 import re
+import struct
 import sys
 import tqdm
 
@@ -60,6 +61,7 @@ class Main(object):
         self.POT = dict()
         self.BUMPS = self.bump_locations(args)
         self.syst = self.make_system(args)
+
     def plot(self, file=None):
         args = self.args
         params = SimpleNamespace(vr=args.vr, w0=args.w0, salt=args.salt)
@@ -67,6 +69,21 @@ class Main(object):
         pot = [self.syst.hamiltonian(i, i, params) for i, _ in enumerate(self.syst.sites)]
         logging.info(f'plot: Plotting potential')
         kwant.plot(self.syst, site_symbol='o', cmap=mpl.colormaps['seismic'], site_color=pot, site_size=0.4, hop_lw=0, file=file)
+
+    def plot_bin(self, file='last-model.bin'):
+        args = self.args
+        params = SimpleNamespace(vr=args.vr, w0=args.w0, salt=args.salt)
+        W, L, a = args.W, args.L, args.a
+        logging.info(f'plot: Collecting potential')
+        pot = np.ndarray((W, L), float)
+        for i, s in enumerate(self.syst.sites):
+            x, y = int(s.pos[0] / a), int(s.pos[1] / a)
+            pot[x, y] = self.syst.hamiltonian(i, i, params)
+        logging.info(f'plot: Plotting potential')
+        with open(file, 'wb') as f:
+            f.write(struct.pack(f'{1+W}f', W, *(np.arange(W) * a)))
+            for x in range(L):
+                f.write(struct.pack(f'{1+W}f', x * a, *pot[x,:]))
 
     def bump_locations(self, args):
         L, W, a, overlap = args.L, args.W, args.a, 80 * 2
@@ -273,7 +290,7 @@ class Main(object):
 
 def main(args):
     model = Main(args)
-    model.plot(file='model.png')
+    model.plot_bin(file='model.bin')
     if args.mpi_rank == 0:
         model.check()
         logging.info(
