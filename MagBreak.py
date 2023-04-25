@@ -61,24 +61,26 @@ class Main(object):
         self.POT = dict()
         self.BUMPS = self.bump_locations(args)
         self.syst = self.make_system(args)
+        self.params = SimpleNamespace(
+            vr=self.args.vr,
+            w0=self.args.w0,
+            salt=self.args.salt,
+            disorder=self.args.disorder,
+        )
 
     def plot(self, file=None):
-        args = self.args
-        params = SimpleNamespace(vr=args.vr, w0=args.w0, salt=args.salt)
         logging.info(f'plot: Collecting potential')
-        pot = [self.syst.hamiltonian(i, i, params) for i, _ in enumerate(self.syst.sites)]
+        pot = [self.syst.hamiltonian(i, i, self.params) for i, _ in enumerate(self.syst.sites)]
         logging.info(f'plot: Plotting potential')
         kwant.plot(self.syst, site_symbol='o', cmap=mpl.colormaps['seismic'], site_color=pot, site_size=0.4, hop_lw=0, file=file)
 
     def plot_bin(self, file='last-model.bin'):
-        args = self.args
-        params = SimpleNamespace(vr=args.vr, w0=args.w0, salt=args.salt)
-        W, L, a = args.W, args.L, args.a
+        W, L, a = self.args.W, self.args.L, self.args.a
         logging.info(f'plot: Collecting potential')
         pot = np.ndarray((W, L), float)
         for i, s in enumerate(self.syst.sites):
             x, y = int(s.pos[0] / a), int(s.pos[1] / a)
-            pot[x, y] = self.syst.hamiltonian(i, i, params)
+            pot[x, y] = self.syst.hamiltonian(i, i, self.params)
         logging.info(f'plot: Plotting potential')
         with open(file, 'wb') as f:
             f.write(struct.pack(f'{1+W}f', W, *(np.arange(W) * a)))
@@ -173,10 +175,10 @@ class Main(object):
             modulation_3c = v0 * (np.cos(g1x*x + g1y*y) +
                                   np.cos(g2x*x + g2y*y) + np.cos(g3x*x + g3y*y))
 
-            if True:
+            if params.disorder == 'site':
                 random_delta = (kwant.digest.uniform(
                     repr(site) + salt) - 0.5)  # disorder in sites
-            else:
+            if params.disorder == 'bump':
                 random_delta = self.get_random_shift(site)  # disorder in bumps
             self.POT[site] = vr * random_delta + modulation_3c
             return 4 * t + self.POT[site]
@@ -235,8 +237,7 @@ class Main(object):
     def comp_R_Hall_DoS(self, energy, Bts, fname):
         logging.info(
             f"comp_R_Hall_DoS(e={energy}, Bts=[{Bts[0]}...{Bts[-1]},{len(Bts)}], \"{fname}\")")
-        params = SimpleNamespace(
-            vr=self.args.vr, w0=self.args.w0, salt=self.args.salt)
+        params = self.params
         for Bt in tqdm.tqdm(Bts, disable=self.args.mpi_rank > 0):
             params.Bt = 1/Bt
             rxy21, rxx, r2t22, rxy12, r2t11, rxx2 = self.hall_resistance(
@@ -250,8 +251,8 @@ class Main(object):
     def check(self):
         e = 2.824086  # 5.14759966618
         x = 0.788  # -1.964
-        params = SimpleNamespace(
-            Bt=x, vr=self.args.vr, w0=self.args.w0, salt=self.args.salt)
+        params = self.params
+        params.Bt = x
         logging.info(f'PARAMS={params}')
         logging.info(f'SYST={self.syst}')
         sm = kwant.smatrix(self.syst, e, params=dict(params=params))
@@ -382,6 +383,9 @@ if __name__ == '__main__':
     parser.add_argument('-t', type=float,
                         help='Hopping magnitude',
                         default=8.8853,
+                        )
+    parser.add_argument('--disorder', choices=['site', 'bump'], default='site',
+                        help='Disorder type',
                         )
     args = parser.parse_args()
     ibbeg, ibend, nb = args.I.split(',')
