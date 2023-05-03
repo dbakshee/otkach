@@ -12,6 +12,7 @@ import os
 import re
 import struct
 import sys
+import time
 import tqdm
 
 
@@ -72,20 +73,29 @@ class Main(object):
         logging.info(f'plot: Collecting potential')
         pot = [self.syst.hamiltonian(i, i, self.params) for i, _ in enumerate(self.syst.sites)]
         logging.info(f'plot: Plotting potential')
-        kwant.plot(self.syst, site_symbol='o', cmap=mpl.colormaps['seismic'], site_color=pot, site_size=0.4, hop_lw=0, file=file)
+        kwant.plot(
+            self.syst,
+            site_symbol='o',
+            cmap=mpl.colormaps['seismic'],
+            site_color=pot,
+            site_size=0.4,
+            hop_lw=0,
+            file=file)
 
     def plot_bin(self, file='last-model.bin'):
         W, L, a = self.args.W, self.args.L, self.args.a
         logging.info(f'plot: Collecting potential')
+        t0 = time.time()
         pot = np.ndarray((W, L), float)
         for i, s in enumerate(self.syst.sites):
             x, y = int(s.pos[0] / a), int(s.pos[1] / a)
             pot[x, y] = self.syst.hamiltonian(i, i, self.params)
-        logging.info(f'plot: Plotting potential')
+        dt = time.time() - t0
+        logging.info(f'plot: Plotting potential {dt}')
         with open(file, 'wb') as f:
             f.write(struct.pack(f'{1+W}f', W, *(np.arange(W) * a)))
             for x in range(L):
-                f.write(struct.pack(f'{1+W}f', x * a, *pot[x,:]))
+                f.write(struct.pack(f'{1+W}f', x * a, *pot[x, :]))
 
     def bump_locations(self, args):
         L, W, a, overlap = args.L, args.W, args.a, 80 * 2
@@ -127,7 +137,7 @@ class Main(object):
                 dist2 = (x - bx)**2 + (y - by)**2
                 #    modulation += np.exp(-dist2/(40*40)) * vr
                 #    modulation += np.exp(-dist2/(35*35)) * vr
-                modulation += np.exp(-dist2/(30*30)) * vr
+                modulation += np.exp(-dist2 / (30 * 30)) * vr
             self.SITES[(x, y)] = modulation
         return self.SITES[(x, y)]
 
@@ -172,8 +182,8 @@ class Main(object):
             tpl = 2 * np.pi / L
             g1x, g2x, g1y, g2y = tpl, 0, tpl / np.sqrt(3), tpl * 2 / np.sqrt(3)
             g3x, g3y = g1x - g2x, g1y - g2y
-            modulation_3c = v0 * (np.cos(g1x*x + g1y*y) +
-                                  np.cos(g2x*x + g2y*y) + np.cos(g3x*x + g3y*y))
+            modulation_3c = v0 * (np.cos(g1x * x + g1y * y) +
+                                  np.cos(g2x * x + g2y * y) + np.cos(g3x * x + g3y * y))
 
             if params.disorder == 'site':
                 random_delta = (kwant.digest.uniform(
@@ -200,7 +210,7 @@ class Main(object):
         syst.attach_lead(lead.reversed())  # 1
 
         top_lead = kwant.Builder(kwant.TranslationalSymmetry((-a, 0)))
-        top_lead[(lat(0, W-1-j) for j in range(Wtop))] = potential_lead
+        top_lead[(lat(0, W - 1 - j) for j in range(Wtop))] = potential_lead
         top_lead[lat.neighbors()] = hopping
 
         syst.attach_lead(top_lead.reversed())  # 2
@@ -217,11 +227,11 @@ class Main(object):
         T2 = st(2, 0) + st(2, 1) + st(2, 3)
         T3 = st(3, 0) + st(3, 1) + st(3, 2)
         S = st(1, 0) + st(3, 0) + st(1, 2) + st(3, 2)
-        alfa22 = S*T1 - (st(1, 0) + st(1, 2)) * (st(2, 1) + st(0, 1))
-        alfa11 = S*T0 - (st(0, 3) + st(0, 1)) * (st(3, 0) + st(1, 0))
-        alfa21 = (st(1, 0)*st(3, 2) - st(1, 2)*st(3, 0))
-        alfa12 = (st(0, 1)*st(2, 3) - st(2, 1)*st(0, 3))
-        detb0 = (alfa22*alfa11 - alfa12*alfa21)/S
+        alfa22 = S * T1 - (st(1, 0) + st(1, 2)) * (st(2, 1) + st(0, 1))
+        alfa11 = S * T0 - (st(0, 3) + st(0, 1)) * (st(3, 0) + st(1, 0))
+        alfa21 = (st(1, 0) * st(3, 2) - st(1, 2) * st(3, 0))
+        alfa12 = (st(0, 1) * st(2, 3) - st(2, 1) * st(0, 3))
+        detb0 = (alfa22 * alfa11 - alfa12 * alfa21) / S
         # print('LOCALS ', {k:v for k, v in locals().items() if k.startswith('T') or k.startswith('det')})
         rxx = -(st(1, 3) * st(2, 0) - st(2, 3) *
                 st(1, 0)) / detb0  # k=0 l=1 m=3 n=2
@@ -239,7 +249,7 @@ class Main(object):
             f"comp_R_Hall_DoS(e={energy}, Bts=[{Bts[0]}...{Bts[-1]},{len(Bts)}], \"{fname}\")")
         params = self.params
         for Bt in tqdm.tqdm(Bts, disable=self.args.mpi_rank > 0):
-            params.Bt = 1/Bt
+            params.Bt = 1 / Bt
             rxy21, rxx, r2t22, rxy12, r2t11, rxx2 = self.hall_resistance(
                 energy, params)
             local_dos = kwant.ldos(
@@ -264,11 +274,11 @@ class Main(object):
         T2 = st(2, 0) + st(2, 1) + st(2, 3)
         T3 = st(3, 0) + st(3, 1) + st(3, 2)
         S = st(1, 0) + st(3, 0) + st(1, 2) + st(3, 2)
-        alfa22 = S*T1 - (st(1, 0) + st(1, 2)) * (st(2, 1) + st(0, 1))
-        alfa11 = S*T0 - (st(0, 3) + st(0, 1)) * (st(3, 0) + st(1, 0))
-        alfa12 = (st(0, 1)*st(2, 3) - st(2, 1)*st(0, 3))
-        alfa21 = (st(1, 0)*st(3, 2) - st(1, 2)*st(3, 0))
-        detb0 = (alfa22*alfa11 - alfa12*alfa21)/S
+        alfa22 = S * T1 - (st(1, 0) + st(1, 2)) * (st(2, 1) + st(0, 1))
+        alfa11 = S * T0 - (st(0, 3) + st(0, 1)) * (st(3, 0) + st(1, 0))
+        alfa12 = (st(0, 1) * st(2, 3) - st(2, 1) * st(0, 3))
+        alfa21 = (st(1, 0) * st(3, 2) - st(1, 2) * st(3, 0))
+        detb0 = (alfa22 * alfa11 - alfa12 * alfa21) / S
         det1 = -T1 * (T2 * T3 - st(2, 3) * st(3, 2))
         det2 = st(1, 2) * (T3 * st(2, 1) + st(2, 3) * st(3, 1))
         det3 = st(1, 3) * (T2 * st(3, 1) + st(2, 1) * st(3, 2))
