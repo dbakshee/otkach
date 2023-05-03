@@ -98,34 +98,54 @@ class Main(object):
                 f.write(struct.pack(f'{1+W}f', x * a, *pot[x, :]))
 
     def bump_locations(self, args):
-        L, W, a, overlap = args.L, args.W, args.a, 80 * 2
-        bargs = [(0, 0), 80, (0-overlap, 0-overlap),
-                 (L * a+overlap, W * a+overlap), args.salt]
-        return self.bump_locations_impl(*bargs)
+        L, W, a, = args.L, args.W, args.a,
+        bump_lattice_a = 80  # lattice constant for bump lattice
+        overlap = bump_lattice_a
+        ans = self.bump_locations_impl(
+            (0, 0),
+            bump_lattice_a,
+            (-overlap, -overlap),  # left-bottom corner of the rectangular area
+            (L * a + overlap, W * a + overlap),  # right-top corner of the rectangular area
+            args.salt,
+        )
+        return ans
 
-    def bump_locations_impl(self, o, ba, c, d, salt):
+    def bump_locations_impl(self, origin, ba, c, d, salt):
         """
         compute bump locations starting at `o`
         with lattice constant `ba` in rect(`c`, `d`)
         """
-        b1 = (ba, 0)
-        b2 = (ba / 2.0, np.sqrt(3.0)/2.0 * ba)
-        cx, cy = c
-        dx, dy = d
-        kmin = int((dx - cx) / 2. / ba) - 100
-        kmax = int((dx - cx) / ba) + 100
-        lmin = 0 - 100
-        lmax = int((dy - cy) / (ba * np.sqrt(3) / 2.0)) + 100
+        b1x, b1y = ba, 0
+        b2x, b2y = ba / 2.0, np.sqrt(3.0) / 2.0 * ba
+        ox, oy = origin
+        cx, cy = c[0] + ox, c[1] + oy
+        dx, dy = d[0] + ox, d[1] + oy
+        # P(k,l) = (k*b1x + l*b2x, k*b1y + l*b2y)
+        # cx <= P(k,l).x <= dx
+        # cy <= P(k,l).y <= dy
+        # cx <= k * b1x + l * b2x <= dx
+        # cy <= l * b2y <= dy
+        lmin = np.floor(cy / b2y).astype(int)
+        lmax = np.ceil(dy / b2y).astype(int)
+        kmin = np.floor((cx - lmax * b2x) / b1x).astype(int)
+        kmax = np.ceil((dx - lmin * b2x) / b1x).astype(int)
         ans = dict()
+        logging.warning(f'Bump lattice vectors: b1={b1x},{b1y} b2={b2x},{b2y}')
+        logging.warning(f'Rectangle: c=({cx},{cy}) d=({dx},{dy}) origin=({ox},{oy}) exd count {int((dy-cy)/b2y*(dx-cx)/b1x)}')
+        logging.warning(f'Got k:{kmin}...{kmax}   l:{lmin}...{lmax}')
+        xmin, xmax, ymin, ymax = (None,) * 4  # for logging
         for k in range(kmin, kmax):
             for l in range(lmin, lmax):
-                x, y = b1[0] * k + b2[0] * l, b1[1] * k + b2[1] * l
+                x, y = ox + b1x * k + b2x * l, oy + b1y * k + b2y * l
                 if not cx <= x <= dx:
                     continue
                 if not cy <= y <= dy:
                     continue
-                ans[(x,  y,)] = kwant.digest.uniform(
-                    repr((x, y,)) + salt) - 0.5
+                ans[(x, y,)] = kwant.digest.uniform(repr((x, y,)) + salt) - 0.5
+                if xmin is None:
+                    xmin, xmax, ymin, ymax = x, x, y, y
+                xmin, xmax, ymin, ymax = min(xmin, x), max(xmax, x), min(ymin, y), max(ymax, y)
+        logging.warning(f'Bumps located in: x:{xmin}...{xmax} y:{ymin}...{ymax} (total {len(ans)})')
         return ans
 
     def get_random_shift(self, site):
@@ -301,7 +321,8 @@ class Main(object):
 
 def main(args):
     model = Main(args)
-    model.plot_bin(file='model.bin')
+    if args.save_potential:
+        model.plot_bin(file=args.save_potential)
     if args.mpi_rank == 0:
         model.check()
         logging.info(
@@ -396,6 +417,9 @@ if __name__ == '__main__':
                         )
     parser.add_argument('--disorder', choices=['site', 'bump'], default='site',
                         help='Disorder type',
+                        )
+    parser.add_argument('--save-potential', type=str, metavar='FILE',
+                        help='Save potenital into this binary file',
                         )
     args = parser.parse_args()
     ibbeg, ibend, nb = args.I.split(',')
