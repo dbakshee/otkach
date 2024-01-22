@@ -5,6 +5,40 @@ PI = math.pi
 S32 = math.sqrt(3) / 2
 G = math.sqrt(1 / S32)
 
+class Sector:
+    def __init__(self, radius):
+        self.radius = radius
+        self.angle = None
+        self.len = None
+        self.height = None
+
+    def withAngle(self, angle):
+        self.angle = angle
+        self.len = 2 * self.radius * math.sin(angle / 2)
+        self.height = 2 * self.radius * math.cos(angle / 2)
+        return self
+
+    def withLen(self, len):
+        self.len = len
+        self.angle = 2 * math.asin(len / 2 / self.radius)
+        self.height = math.sqrt(self.radius**2 - (len / 2)**2)
+        return self
+
+    def withHeight(self, height):
+        self.height = height
+        self.angle = 2 * math.acos(height / self.radius)
+        self.len = 2 * math.sqrt(self.radius**2 - height**2)
+        return self
+
+    def asector(self):
+        return PI * self.radius**2 * (self.angle / PI)
+
+    def atriangle(self):
+        return 0.5 * self.len * self.height
+
+    def asegment(self):
+        return self.asector() - self.atriangle()
+
 
 def A0(kf):
     return PI * kf**2
@@ -34,12 +68,16 @@ def T0(kf):
 
 
 def main():
+    first = True
     for f in np.linspace(0.5, 2, 10):
         kf = G * f
         q = A0(kf) - 3*A1(kf) + 2*T0(kf)
         s = (A0(kf) - A1(kf)) / 2
         t = s - (A1(kf) - T0(kf))
-        print(f"{kf/G:.2f} {q} {s} {t}")
+        if first:
+            first = False
+            print(f"{'kf':5s}A0-3A1+2T0 (A0-A1)/2 A0/2-3A1/2+T0")
+        print(f"{kf/G:.2f} {q:.4f} {s:.4f} {t:.4f}")
 
 
 if __name__ == '__main__':
