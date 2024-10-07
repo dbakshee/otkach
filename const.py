@@ -31,7 +31,7 @@ class Sector:
         return self
 
     def asector(self):
-        return PI * self.radius**2 * (self.angle / PI)
+        return PI * self.radius**2 * (self.angle / (2 * PI))
 
     def atriangle(self):
         return 0.5 * self.len * self.height
@@ -45,27 +45,37 @@ def A0(kf):
 
 
 def A1(kf):
-    a = math.acos((G/2) / kf)  # half-angle of sector
-    b = kf * math.sin(a)  # half-len of segment
-    c = PI * kf**2 * (a / PI)  # sector area
-    d = 0.5 * (2*b) * (G/2)  # triangle area
-    e = c - d  # segment area
-    return 2 * e
+    if False:
+        a = math.acos((G/2) / kf)  # half-angle of sector
+        b = kf * math.sin(a)  # half-len of segment
+        c = PI * kf**2 * (a / PI)  # sector area
+        d = 0.5 * (2*b) * (G/2)  # triangle area
+        e = c - d  # segment area
+        return 2 * e
+    else:
+        a1 = Sector(kf).withHeight(G/2)
+        return 2 * a1.asegment()
 
 
 def T0(kf):
-    s = -G * S32 + math.sqrt(4 * kf**2 - G**2) / 2
-    sx = S32 * s
-    sy = s / 2
-    a = math.atan2((G/2) + sx, G*S32 + sy)  # half-angle of sector
-    b = kf * math.sin(a)  # half-len of segment
-    c = PI * kf**2 * (a / PI)  # sector area
-    h = kf * math.cos(a)  # sub-triangle height
-    d = 0.5 * (2*b) * h  # sub-triangle area
-    e = c - d  # segment area
-    f = 0.5 * (2*b) * (2*b*S32)  # triangle area
-    return f + 3*e
-
+    if False:
+        s = -G * S32 + math.sqrt(4 * kf**2 - G**2) / 2
+        sx = S32 * s
+        sy = s / 2
+        a = math.atan2((G/2) + sx, G*S32 + sy)  # half-angle of sector
+        b = kf * math.sin(a)  # half-len of segment
+        c = PI * kf**2 * (a / PI)  # sector area
+        h = kf * math.cos(a)  # sub-triangle height
+        d = 0.5 * (2*b) * h  # sub-triangle area
+        e = c - d  # segment area
+        f = 0.5 * (2*b) * (2*b*S32)  # triangle area
+        return f + 3*e
+    else:
+        s = -G * S32 + math.sqrt(4 * kf**2 - G**2) / 2
+        b = G + 2 * s * S32
+        aside = Sector(kf).withLen(b).asegment()
+        acenter = Sector(b).withLen(b).atriangle()
+        return acenter + 3 * aside
 
 def main():
     first = True
