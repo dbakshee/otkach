@@ -20,7 +20,7 @@ for (int i = 0; i < n; ++i) {  draw(c[i], pb); dot(z[i], pb); }
     real a = acos(g/2/kf) / pi * 180;
     pen p = 0.6*blue;
     draw(arc(z[1],kf,a,360-a), p+1.3, Arrow(size=10, position=2.5));
-    draw(arc(z[2],kf,180+a,180-a), p+1.3, Arrow(size=10, position=1.5));
+    draw(arc(z[2],kf,180-a,180+a,CCW), p+1.3, Arrow(size=10, position=0.7));
     label("\Large$A_0{-}A_1$", z[1]+(0,kf), N, p);
 }
 
@@ -28,7 +28,7 @@ for (int i = 0; i < n; ++i) {  draw(c[i], pb); dot(z[i], pb); }
     real a = acos(g/kf) / pi * 180;
     pen p = 0.6*blue;
     draw(arc(z[3],kf,a,360-a), p+1.3, Arrow(size=10, position=2.5));
-    draw(arc(z[5],kf,180+a,180-a), p+1.3, Arrow(size=10, position=1.5));
+    draw(arc(z[5],kf,180-a,180+a,CCW), p+1.3, Arrow(size=10, position=0.7));
     label("\Large$A_0{-}A_2$", z[3]+(0,kf), N, p);
 }
 
