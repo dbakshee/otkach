@@ -28,7 +28,7 @@ for (int i = 0; i < m; ++i) {
     picture a0;
     fill(a0, c[0*n+1], red + opacity(0.2));
     add(a0);
-    label("$A_0$", z[0*n+1], N, 0.7*red);
+    label("$A_0$", z[0*n+1],  0.7*red);
 }
 //
 {
@@ -45,18 +45,26 @@ for (int i = 0; i < m; ++i) {
     clip(t0, c[1*n+0]);
     clip(t0, c[2*n+0]);
     add(t0);
-    real y = sqrt(kf**2 - g**2/4);
-    label("$T_0$", (z[1*n+0]+z[2*n+0])/2 + (0, y), N, 0.5*blue);
+    real y = sqrt(g**2 - g**2/4)/3;
+    label("$T_0$", (z[1*n+0]+z[2*n+0])/2 + (0, y), 0.5*blue);
 }
 //
 {
-    picture fig;
     pen pen = orange;
-    path p[];
-    p[0] = arc(z[0*n+3], kf, )
-    fill(f, c[0*n+3], p + opacity(0.2));
-    { clip(f, c[0*n+2]); add(f); }
-    { clip(f, c[1*n+2]); add(f); }
-    real y = sqrt(kf**2 - g**2/4);
-    label("$2A_1-T_0$", (z[0*n+2]+z[1*n+2])/2 + (0, y), N, 0.5*p);
+    path u = c[0*n+3];
+    path l = c[0*n+2];
+    path r = c[1*n+2];
+    real tub = intersections(u,l)[0][0]*90;
+    real tue = intersections(u,r)[1][0]*90;
+    real tlb = intersections(l,r)[0][0]*90;
+    real tle = intersections(l,u)[1][0]*90;
+    real trb = intersections(r,u)[0][0]*90;
+    real tre = intersections(r,l)[0][0]*90;
+    fill(
+        arc(z[0*n+3], kf, tub, tue)..
+        arc(z[1*n+2], kf, trb, tre)..
+        arc(z[0*n+2], kf, tlb, tle)..cycle,
+        pen + opacity(0.2));
+    real y = sqrt(g**2 - g**2/4)/2;
+    label("$2A_1-T_0$", (z[0*n+2]+z[1*n+2])/2 + (0, y), 0.5*pen);
 }
