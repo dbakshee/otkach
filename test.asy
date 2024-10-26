@@ -28,12 +28,12 @@ for (int i = -1; i < m + 1; ++i) {
 //
 {
     pen pen = green;
-    pair zl = z(1,1);
+    pair zl = z(2,0);
     pair zr = z(2,1);
     path l = circle(zl, kf);
     path r = circle(zr, kf);
-    real tlb = intersections(l,r)[1][0]*90;
-    real tle = intersections(l,r)[0][0]*90 + 360;
+    real tlb = intersections(l,r)[0][0]*90;
+    real tle = intersections(l,r)[1][0]*90 + 360;
     real trb = intersections(r,l)[0][0]*90;
     real tre = intersections(r,l)[1][0]*90;
     fill(
@@ -43,6 +43,27 @@ for (int i = -1; i < m + 1; ++i) {
     draw(arc(zl, kf, tlb, tle));
     draw(arc(zr, kf, trb, tre), Arrow(position=0.6));
     label("$A_1$", (zl + zr)/2, 0.5*pen);
+}
+{
+    pen pen = green;
+    pair zu = z(2,4);
+    pair zd = z(2,2);
+    real kf1 = g*1.05;
+    path u = circle(zu, kf1);
+    path d = circle(zd, kf1);
+    draw(u, 0.3white+dashed);
+    draw(d, 0.3white+dashed);
+    real tab = intersections(d,u)[0][0]*90;
+    real tae = intersections(d,u)[1][0]*90 + 360;
+    real tbb = intersections(u,d)[0][0]*90;
+    real tbe = intersections(u,d)[1][0]*90;
+    fill(
+        arc(zd, kf1, tab, tae)..
+        arc(zu, kf1, tbb, tbe)..
+        cycle, pen + opacity(0.2));
+    draw(arc(zd, kf1, tab, tae), 0.5pen+dashed);
+    draw(arc(zu, kf1, tbb, tbe), 0.5pen+dashed, Arrow(position=0.6));
+    label("$A_{1a}$", (zu + zd)/2, 0.3*pen);
 }
 //
 {
@@ -99,47 +120,101 @@ for (int i = -1; i < m + 1; ++i) {
 //
 {
     pen pen = cyan;
-    pair zu = z(2,3);
-    pair zl = z(2,2);
-    pair zr = z(3,2);
-    path u = circle(zu, kf);
+    pair zd = z(3,2);
+    pair zl = z(2,3);
+    pair zr = z(3,3);
+    path d = circle(zd, kf);
     path l = circle(zl, kf);
     path r = circle(zr, kf);
-    real tubl = intersections(u,l)[0][0]*90;
-    real tuel = intersections(u,r)[0][0]*90;
-    real trbc = intersections(r,u)[1][0]*90;
-    real trec = intersections(r,l)[1][0]*90;
-    real tlbc = intersections(l,r)[1][0]*90;
-    real tlec = intersections(l,u)[0][0]*90;
-    real tubr = intersections(u,l)[1][0]*90;
-    real tuer = intersections(u,r)[1][0]*90;
-    real tlb = intersections(l,r)[0][0]*90;
-    real tle = intersections(l,u)[1][0]*90;
-    real trb = intersections(r,u)[0][0]*90;
-    real tre = intersections(r,l)[0][0]*90;
-    // draw(arc(zu, kf, tubl, tuel), Arrow);
-    // draw(arc(zr, kf, trbc, trec), Arrow);
-    // draw(arc(zl, kf, tlbc, tlec, CCW), Arrow);
-    // draw(arc(zu, kf, tubr, tuer), Arrow);
-    // draw(arc(zr, kf, trb, tre), Arrow);
-    // draw(arc(zl, kf, tlb, tle), Arrow);
+    real tub = intersections(r,l)[0][0]*90;
+    real tue = intersections(r,d)[0][0]*90;
+    real tlb = intersections(d,r)[1][0]*90;
+    real tle = intersections(d,l)[1][0]*90;
+    real tmb = intersections(l,d)[0][0]*90;
+    real tme = intersections(l,r)[1][0]*90;
+    real tnb = intersections(r,l)[1][0]*90;
+    real tne = intersections(r,d)[1][0]*90;
+    real tob = intersections(d,r)[0][0]*90;
+    real toe = intersections(d,l)[0][0]*90;
+    real tpb = intersections(l,d)[1][0]*90;
+    real tpe = intersections(l,r)[0][0]*90;
     fill(
-        arc(zu, kf, tubl, tuel)..
-        arc(zr, kf, trbc, trec)..
-        arc(zl, kf, tlbc, tlec, CCW)..
-        arc(zu, kf, tubr, tuer)..
-        arc(zr, kf, trb, tre)..
-        arc(zl, kf, tlb, tle)..
-        cycle,
-        pen + opacity(0.2));
-    draw(arc(zu, kf, tubl, tuel));
-    draw(arc(zr, kf, trbc, trec));
-    draw(arc(zl, kf, tlbc, tlec, CCW));
-    draw(arc(zu, kf, tubr, tuer));
-    draw(arc(zr, kf, trb, tre));
-    draw(arc(zl, kf, tlb, tle), Arrow(position=0.5));
+        arc(zr, kf, tub, tue)..
+        arc(zd, kf, tlb, tle)..
+        arc(zl, kf, tmb, tme)..
+        arc(zr, kf, tnb, tne, CCW)..
+        arc(zd, kf, tob, toe)..
+        arc(zl, kf, tpb, tpe, CCW)..
+        cycle, pen + opacity(0.2));
+    draw(arc(zr, kf, tub, tue), Arrow(position=0.6));
+    draw(arc(zd, kf, tlb, tle));
+    draw(arc(zl, kf, tmb, tme));
+    draw(arc(zr, kf, tnb, tne, CCW));
+    draw(arc(zd, kf, tob, toe));
+    draw(arc(zl, kf, tpb, tpe, CCW));
     real y = sqrt(g**2 - g**2/4)/2;
-    label("$3A_1-2T_0$", (zl+zr)/2 + (0, y), 0.5*pen);
+    label("$3A_1-2T_0$", (zl+zr)/2 - (0, y), 0.3*pen);
+}
+{
+    pen pen = cyan + 0.3green;
+    pair zo = z(2,2);
+    pair za = z(1,2);
+    pair zb = z(1,1);
+    pair zc = z(2,1);
+    path o = circle(zo, kf);
+    path a = circle(za, kf);
+    path b = circle(zb, kf);
+    path c = circle(zc, kf);
+    real tab = intersections(o,a)[0][0]*90;
+    real tae = intersections(o,c)[1][0]*90;
+    real tbb = intersections(c,o)[0][0]*90;
+    real tbe = intersections(c,b)[0][0]*90;
+    real tcb = intersections(b,c)[0][0]*90;
+    real tce = intersections(b,a)[0][0]*90;
+    real tdb = intersections(a,b)[1][0]*90;
+    real tde = intersections(a,o)[0][0]*90;
+    draw(arc(zo, kf, tab, tae), Arrow(position=0.6));
+    draw(arc(zc, kf, tbb, tbe));
+    draw(arc(zb, kf, tcb, tce));
+    draw(arc(za, kf, tdb, tde, CCW));
+    fill(
+        arc(zo, kf, tab, tae)..
+        arc(zc, kf, tbb, tbe)..
+        arc(zb, kf, tcb, tce)..
+        arc(za, kf, tdb, tde, CCW)..
+        cycle, pen + opacity(0.2));
+    real y = sqrt(g**2 - g**2/4)/2;
+    label("$3A_1-2T_0$", (zb+zc)/2 + (0, y), 0.3*pen);
+}
+{
+    pen pen = 0.7cyan;
+    pair za = z(0,4);
+    pair zb = z(0,3);
+    pair zc = z(1,4);
+    pair zd = z(1,3);
+    path a = circle(za, kf);
+    path b = circle(zb, kf);
+    path c = circle(zc, kf);
+    path d = circle(zd, kf);
+    real tab = intersections(b,d)[0][0]*90;
+    real tae = intersections(b,a)[1][0]*90;
+    real tbb = intersections(a,b)[0][0]*90;
+    real tbe = intersections(a,c)[1][0]*90;
+    real tcb = intersections(c,a)[1][0]*90;
+    real tce = intersections(c,d)[1][0]*90;
+    real tdb = intersections(d,c)[0][0]*90;
+    real tde = intersections(d,b)[0][0]*90;
+    fill(
+        arc(zb, kf, tab, tae)..
+        arc(za, kf, tbb, tbe)..
+        arc(zc, kf, tcb, tce)..
+        arc(zd, kf, tdb, tde)..
+        cycle, pen + opacity(0.2));
+    draw(arc(zb, kf, tab, tae), Arrow(position=1.6));
+    draw(arc(za, kf, tbb, tbe));
+    draw(arc(zc, kf, tcb, tce), Arrow(position=1.6));
+    draw(arc(zd, kf, tdb, tde));
+    label("$3A_1-2T_0$", (zb+zc)/2, 0.3*pen);
 }
 {
     pen pen = yellow;
