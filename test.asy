@@ -132,32 +132,19 @@ for (int i = -1; i < m + 1; ++i) {
     path d = circle(zd, kf);
     path l = circle(zl, kf);
     path r = circle(zr, kf);
-    real tub = intersections(r,l)[0][0]*90;
-    real tue = intersections(r,d)[0][0]*90;
-    real tlb = intersections(d,r)[1][0]*90;
-    real tle = intersections(d,l)[1][0]*90;
-    real tmb = intersections(l,d)[0][0]*90;
-    real tme = intersections(l,r)[1][0]*90;
-    real tnb = intersections(r,l)[1][0]*90;
-    real tne = intersections(r,d)[1][0]*90;
-    real tob = intersections(d,r)[0][0]*90;
-    real toe = intersections(d,l)[0][0]*90;
-    real tpb = intersections(l,d)[1][0]*90;
-    real tpe = intersections(l,r)[0][0]*90;
-    fill(
-        arc(zr, kf, tub, tue)..
-        arc(zd, kf, tlb, tle)..
-        arc(zl, kf, tmb, tme)..
-        arc(zr, kf, tnb, tne, CCW)..
-        arc(zd, kf, tob, toe)..
-        arc(zl, kf, tpb, tpe, CCW)..
-        cycle, pen + opacity(0.2));
-    draw(arc(zr, kf, tub, tue), Arrow(position=0.6));
-    draw(arc(zd, kf, tlb, tle));
-    draw(arc(zl, kf, tmb, tme));
-    draw(arc(zr, kf, tnb, tne, CCW));
-    draw(arc(zd, kf, tob, toe));
-    draw(arc(zl, kf, tpb, tpe, CCW));
+    real[][] dl = intersections(d,l);
+    real[][] dr = intersections(d,r);
+    real[][] rl = intersections(r,l);
+    path res =
+        subpath(d, dr[1][0], dl[1][0])..
+        subpath(l, dl[1][1], rl[1][1])..
+        subpath(r, rl[1][0], dr[0][1])..
+        subpath(d, dr[0][0], dl[0][0])..
+        subpath(l, dl[0][1], rl[0][1]+4)..
+        subpath(r, rl[0][0], dr[1][1])..
+        cycle;
+    fill(res, pen + opacity(0.2));
+    draw(res, Arrow(position=0.6));
     real y = sqrt(g**2 - g**2/4)/2;
     label(label, (zl+zr)/2 - (0, y), 0.3pen);
 }
