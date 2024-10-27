@@ -19,14 +19,16 @@ for (int i = -1; i < m + 1; ++i) {
         dot(z(i,j), pb); }}
 //------------------------------------------------------------------------------
 {
+    string label = "$A_0$";
     pen pen = red;
     pair zc = z(0,1);
     fill(arc(zc, kf, 0, 360)..cycle, pen + opacity(0.2));
     draw(arc(zc, kf, 0, 360), Arrow(position=1.5));
-    label("$A_0$", zc,  0.5*pen);
+    label(label, zc,  0.5*pen);
 }
 //
 {
+    string label = "$A_1$";
     pen pen = green;
     pair zl = z(2,0);
     pair zr = z(2,1);
@@ -42,9 +44,10 @@ for (int i = -1; i < m + 1; ++i) {
         cycle, pen + opacity(0.2));
     draw(arc(zl, kf, tlb, tle));
     draw(arc(zr, kf, trb, tre), Arrow(position=0.6));
-    label("$A_1$", (zl + zr)/2, 0.5*pen);
+    label(label, (zl + zr)/2, 0.5*pen);
 }
 {
+    string label = "$A_{1a}$";
     pen pen = green;
     pair zu = z(2,4);
     pair zd = z(2,2);
@@ -63,10 +66,11 @@ for (int i = -1; i < m + 1; ++i) {
         cycle, pen + opacity(0.2));
     draw(arc(zd, kf1, tab, tae), 0.5pen+dashed);
     draw(arc(zu, kf1, tbb, tbe), 0.5pen+dashed, Arrow(position=0.6));
-    label("$A_{1a}$", (zu + zd)/2, 0.3*pen);
+    label(label, (zu + zd)/2, 0.3*pen);
 }
 //
 {
+    string label = "$T_0$";
     pen pen = blue;
     pair zu = z(1,1);
     pair zl = z(1,0);
@@ -89,10 +93,11 @@ for (int i = -1; i < m + 1; ++i) {
     draw(arc(zl, kf, tlb, tle));
     draw(arc(zr, kf, trb, tre), Arrow(position=0.6));
     real y = sqrt(g**2 - g**2/4)/3;
-    label("$T_0$", (zl+zr)/2 + (0, y), 0.5*pen);
+    label(label, (zl+zr)/2 + (0, y), 0.5*pen);
 }
 //
 {
+    string label = "$2A_1-T_0$";
     pen pen = orange;
     pair zu = z(0,3);
     pair zl = z(0,2);
@@ -115,10 +120,11 @@ for (int i = -1; i < m + 1; ++i) {
     draw(arc(zr, kf, trb, tre));
     draw(arc(zl, kf, tlb, tle), Arrow(position=0.5));
     real y = sqrt(g**2 - g**2/4)/2;
-    label("$2A_1-T_0$", (zl+zr)/2 + (0, y), 0.5*pen);
+    label(label, (zl+zr)/2 + (0, y), 0.5*pen);
 }
 //
 {
+    string label = "$3A_1-2T_0$";
     pen pen = cyan;
     pair zd = z(3,2);
     pair zl = z(2,3);
@@ -153,9 +159,10 @@ for (int i = -1; i < m + 1; ++i) {
     draw(arc(zd, kf, tob, toe));
     draw(arc(zl, kf, tpb, tpe, CCW));
     real y = sqrt(g**2 - g**2/4)/2;
-    label("$3A_1-2T_0$", (zl+zr)/2 - (0, y), 0.3*pen);
+    label(label, (zl+zr)/2 - (0, y), 0.3pen);
 }
 {
+    string label = "$3A_1-2T_0$";
     pen pen = cyan + 0.3green;
     pair zo = z(2,2);
     pair za = z(1,2);
@@ -184,9 +191,10 @@ for (int i = -1; i < m + 1; ++i) {
         arc(za, kf, tdb, tde, CCW)..
         cycle, pen + opacity(0.2));
     real y = sqrt(g**2 - g**2/4)/2;
-    label("$3A_1-2T_0$", (zb+zc)/2 + (0, y), 0.3*pen);
+    label(label, (zb+zc)/2 + (0, y), 0.3*pen);
 }
 {
+    string label = "$3A_1-2T_0$";
     pen pen = 0.7cyan;
     pair za = z(0,4);
     pair zb = z(0,3);
@@ -214,9 +222,10 @@ for (int i = -1; i < m + 1; ++i) {
     draw(arc(za, kf, tbb, tbe));
     draw(arc(zc, kf, tcb, tce), Arrow(position=1.6));
     draw(arc(zd, kf, tdb, tde));
-    label("$3A_1-2T_0$", (zb+zc)/2, 0.3*pen);
+    label(label, (zb+zc)/2, 0.3*pen);
 }
 {
+    string label = "$2A_0-A_1$";
     pen pen = yellow;
     pair zl = z(3,1);
     pair zr = z(4,1);
@@ -233,9 +242,10 @@ for (int i = -1; i < m + 1; ++i) {
         pen + opacity(0.2));
     draw(arc(zl, kf, tlb, tle), Arrow(position=1));
     draw(arc(zr, kf, trb, tre), Arrow(position=1));
-    label("$2A_0-A_1$", (zl+zr)/2, 0.3*pen);
+    label(label, (zl+zr)/2, 0.3*pen);
 }
 {
+    string label = "$A_0+A_1$";
     pen pen = magenta;
     pair zl = z(4,2);
     pair zr = z(4,3);
@@ -255,7 +265,7 @@ for (int i = -1; i < m + 1; ++i) {
     draw(arc(zr, kf, 0, 360), Arrow(position=1));
     draw(arc(zr, 0.97*kf, trb, tre), Arrow(position=0.3));
     draw(arc(zl, kf, tlb, tle), Arrow(position=0.5));
-    label("$A_0+A_1$", zr, N, 0.5*pen);
+    label(label, zr, N, 0.5*pen);
 }
 
 limits(z(0,1) - (1.1kf,1.1kf),
