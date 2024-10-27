@@ -3,8 +3,9 @@ settings.outformat = "pdf";
 unitsize(1.8cm);
 real kf = 0.8;
 real g = 1;
+real gy = sqrt(3)/2*g;
 pair g1 = (1g, 0);
-pair g2 = (g/2, sqrt(3)/2*g);
+pair g2 = (g/2, gy);
 int m = 5;
 int n = 4;
 
@@ -255,5 +256,8 @@ for (int i = -1; i < m + 2; ++i) {
     label(label, zr, N);
 }
 
-limits(z(0,1) - (1.2kf,1.2kf),
+xaxis("$k_x$", YEquals(0), xmin=-1g, xmax=g/2, Arrow);
+yaxis("$k_y$", XEquals(0-0.5g), ymin=-gy, ymax=gy, Arrow);
+
+limits(z(0,1) - (1.4g,1.4gy),
        z(4,3) + (1.2kf,1.2kf), Crop);

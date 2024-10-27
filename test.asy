@@ -3,8 +3,9 @@ settings.outformat = "pdf";
 unitsize(1.8cm);
 real kf = 0.8;
 real g = 1;
+real gy = sqrt(3)/2*g;
 pair g1 = (1g, 0);
-pair g2 = (g/2, sqrt(3)/2*g);
+pair g2 = (g/2, gy);
 
 pair z(int i, int j) {
     if (j >= 0) {
@@ -15,8 +16,8 @@ pair z(int i, int j) {
 }
 
 pen pb = 0.8*white;
-for (int i = -1; i < 2; ++i) {
-    for (int j = -1; j < 2; ++j) {
+for (int i = -1; i < 4; ++i) {
+    for (int j = -1; j < 4; ++j) {
         draw(circle(z(i,j), kf), pb);
         dot(z(i,j), pb); }}
 //------------------------------------------------------------------------------
@@ -35,234 +36,106 @@ for (int i = -1; i < 2; ++i) {
     draw(pb, Arrow(position=1.5));
     label(label, zl - g1/4);
 }
-// //
-// {
-//     string label = "$A_1$";
-//     pen pen = green;
-//     pair zl = z(2,0);
-//     pair zr = z(2,1);
-//     path l = circle(zl, kf);
-//     path r = circle(zr, kf);
-//     real tlb = intersections(l,r)[0][0]*90;
-//     real tle = intersections(l,r)[1][0]*90 + 360;
-//     real trb = intersections(r,l)[0][0]*90;
-//     real tre = intersections(r,l)[1][0]*90;
-//     fill(
-//         arc(zl, kf, tlb, tle)..
-//         arc(zr, kf, trb, tre)..
-//         cycle, pen + opacity(0.2));
-//     draw(arc(zl, kf, tlb, tle));
-//     draw(arc(zr, kf, trb, tre), Arrow(position=0.6));
-//     label(label, (zl + zr)/2);
-// }
-// {
-//     string label = "$A_{1a}$";
-//     pen pen = green;
-//     pair zu = z(2,4);
-//     pair zd = z(2,2);
-//     real kf1 = g*1.05;
-//     path u = circle(zu, kf1);
-//     path d = circle(zd, kf1);
-//     draw(u, 0.3white+dashed);
-//     draw(d, 0.3white+dashed);
-//     real tab = intersections(d,u)[0][0]*90;
-//     real tae = intersections(d,u)[1][0]*90 + 360;
-//     real tbb = intersections(u,d)[0][0]*90;
-//     real tbe = intersections(u,d)[1][0]*90;
-//     fill(
-//         arc(zd, kf1, tab, tae)..
-//         arc(zu, kf1, tbb, tbe)..
-//         cycle, pen + opacity(0.2));
-//     draw(arc(zd, kf1, tab, tae), 0.5pen+dashed);
-//     draw(arc(zu, kf1, tbb, tbe), 0.5pen+dashed, Arrow(position=0.6));
-//     label(label, (zu + zd)/2);
-// }
-// //
-// {
-//     string label = "$T_0$";
-//     pen pen = blue;
-//     pair zu = z(1,1);
-//     pair zl = z(1,0);
-//     pair zr = z(2,0);
-//     path u = circle(zu, kf);
-//     path l = circle(zl, kf);
-//     path r = circle(zr, kf);
-//     real tub = intersections(u,r)[0][0]*90;
-//     real tue = intersections(u,l)[1][0]*90;
-//     real tlb = intersections(l,u)[0][0]*90;
-//     real tle = intersections(l,r)[0][0]*90;
-//     real trb = intersections(r,l)[0][0]*90;
-//     real tre = intersections(r,u)[1][0]*90;
-//     fill(
-//         arc(zu, kf, tub, tue)..
-//         arc(zl, kf, tlb, tle)..
-//         arc(zr, kf, trb, tre)..
-//         cycle, pen +  opacity(0.2));
-//     draw(arc(zu, kf, tub, tue));
-//     draw(arc(zl, kf, tlb, tle));
-//     draw(arc(zr, kf, trb, tre), Arrow(position=0.6));
-//     real y = sqrt(g**2 - g**2/4)/3;
-//     label(label, (zl+zr)/2 + (0, y));
-// }
-// //
-// {
-//     string label = "$2A_1{-}T_0$";
-//     pen pen = orange;
-//     pair zu = z(0,3);
-//     pair zl = z(0,2);
-//     pair zr = z(1,2);
-//     path u = circle(zu, kf);
-//     path l = circle(zl, kf);
-//     path r = circle(zr, kf);
-//     real tub = intersections(u,l)[0][0]*90;
-//     real tue = intersections(u,r)[1][0]*90;
-//     real tlb = intersections(l,r)[0][0]*90;
-//     real tle = intersections(l,u)[1][0]*90;
-//     real trb = intersections(r,u)[0][0]*90;
-//     real tre = intersections(r,l)[0][0]*90;
-//     fill(
-//         arc(zu, kf, tub, tue)..
-//         arc(zr, kf, trb, tre)..
-//         arc(zl, kf, tlb, tle)..cycle,
-//         pen + opacity(0.2));
-//     draw(arc(zu, kf, tub, tue));
-//     draw(arc(zr, kf, trb, tre));
-//     draw(arc(zl, kf, tlb, tle), Arrow(position=0.5));
-//     real y = sqrt(g**2 - g**2/4)/2;
-//     label(label, (zl+zr)/2 + (0, y));
-// }
-// //
-// {
-//     string label = "$3A_1{-}2T_0$";
-//     pen pen = cyan;
-//     pair zd = z(3,2);
-//     pair zl = z(2,3);
-//     pair zr = z(3,3);
-//     path d = circle(zd, kf);
-//     path l = circle(zl, kf);
-//     path r = circle(zr, kf);
-//     real[][] dl = intersections(d,l);
-//     real[][] dr = intersections(d,r);
-//     real[][] rl = intersections(r,l);
-//     path res =
-//         subpath(d, dr[1][0], dl[1][0])..
-//         subpath(l, dl[1][1], rl[1][1])..
-//         subpath(r, rl[1][0], dr[0][1])..
-//         subpath(d, dr[0][0], dl[0][0])..
-//         subpath(l, dl[0][1], rl[0][1]+4)..
-//         subpath(r, rl[0][0], dr[1][1])..
-//         cycle;
-//     fill(res, pen + opacity(0.2));
-//     draw(res, Arrow(position=0.6));
-//     real y = sqrt(g**2 - g**2/4)/2;
-//     label(label, (zl+zr)/2 - (0, y));
-// }
-// {
-//     string label = "$3A_1{-}2T_0$";
-//     pen pen = cyan;
-//     pair zo = z(2,2);
-//     pair za = z(1,2);
-//     pair zb = z(1,1);
-//     pair zc = z(2,1);
-//     path o = circle(zo, kf);
-//     path a = circle(za, kf);
-//     path b = circle(zb, kf);
-//     path c = circle(zc, kf);
-//     real tab = intersections(o,a)[0][0]*90;
-//     real tae = intersections(o,c)[1][0]*90;
-//     real tbb = intersections(c,o)[0][0]*90;
-//     real tbe = intersections(c,b)[0][0]*90;
-//     real tcb = intersections(b,c)[0][0]*90;
-//     real tce = intersections(b,a)[0][0]*90;
-//     real tdb = intersections(a,b)[1][0]*90;
-//     real tde = intersections(a,o)[0][0]*90;
-//     draw(arc(zo, kf, tab, tae), Arrow(position=0.6));
-//     draw(arc(zc, kf, tbb, tbe));
-//     draw(arc(zb, kf, tcb, tce));
-//     draw(arc(za, kf, tdb, tde, CCW));
-//     fill(
-//         arc(zo, kf, tab, tae)..
-//         arc(zc, kf, tbb, tbe)..
-//         arc(zb, kf, tcb, tce)..
-//         arc(za, kf, tdb, tde, CCW)..
-//         cycle, pen + opacity(0.2));
-//     real y = sqrt(g**2 - g**2/4)/2;
-//     label(label, (zb+zc)/2 + (0, y));
-// }
-// {
-//     string label = "$3A_1{-}2T_0$";
-//     pen pen = cyan;
-//     pair za = z(0,4);
-//     pair zb = z(0,3);
-//     pair zc = z(1,4);
-//     pair zd = z(1,3);
-//     path a = circle(za, kf);
-//     path b = circle(zb, kf);
-//     path c = circle(zc, kf);
-//     path d = circle(zd, kf);
-//     real tab = intersections(b,d)[0][0]*90;
-//     real tae = intersections(b,a)[1][0]*90;
-//     real tbb = intersections(a,b)[0][0]*90;
-//     real tbe = intersections(a,c)[1][0]*90;
-//     real tcb = intersections(c,a)[1][0]*90;
-//     real tce = intersections(c,d)[1][0]*90;
-//     real tdb = intersections(d,c)[0][0]*90;
-//     real tde = intersections(d,b)[0][0]*90;
-//     fill(
-//         arc(zb, kf, tab, tae)..
-//         arc(za, kf, tbb, tbe)..
-//         arc(zc, kf, tcb, tce)..
-//         arc(zd, kf, tdb, tde)..
-//         cycle, pen + opacity(0.2));
-//     draw(arc(zb, kf, tab, tae), Arrow(position=1.6));
-//     draw(arc(za, kf, tbb, tbe));
-//     draw(arc(zc, kf, tcb, tce), Arrow(position=1.6));
-//     draw(arc(zd, kf, tdb, tde));
-//     label(label, (zb+zc)/2);
-// }
-// {
-//     string label = "$2A_0{-}A_1$";
-//     pen pen = yellow;
-//     pair zl = z(3,1);
-//     pair zr = z(4,1);
-//     path l = circle(zl, kf);
-//     path r = circle(zr, kf);
-//     real tlb = intersections(l,r)[0][0]*90;
-//     real tle = intersections(l,r)[1][0]*90;
-//     real trb = intersections(r,l)[1][0]*90;
-//     real tre = intersections(r,l)[0][0]*90 + 360;
-//     fill(
-//         arc(zl, kf, tlb, tle)..
-//         arc(zr, kf, trb, tre)..
-//         cycle,
-//         pen + opacity(0.2));
-//     draw(arc(zl, kf, tlb, tle), Arrow(position=1));
-//     draw(arc(zr, kf, trb, tre), Arrow(position=1));
-//     label(label, (zl+zr)/2);
-// }
-// {
-//     string label = "$A_0{+}A_1$";
-//     pen pen = magenta;
-//     pair zl = z(4,2);
-//     pair zr = z(4,3);
-//     path l = circle(zl, kf);
-//     path r = circle(zr, kf);
-//     real trb = intersections(r,l)[0][0]*90;
-//     real tre = intersections(r,l)[1][0]*90 + 360;
-//     real tlb = intersections(l,r)[0][0]*90;
-//     real tle = intersections(l,r)[1][0]*90;
-//     fill(
-//         arc(zl, kf, tlb, tle)..
-//         arc(zr, kf, trb, tre)..
-//         cycle,
-//         pen + opacity(0.4));
-//     fill(r,
-//         pen + opacity(0.2));
-//     draw(arc(zr, kf, 0, 360), Arrow(position=1));
-//     draw(arc(zr, 0.97*kf, trb, tre), Arrow(position=0.3));
-//     draw(arc(zl, kf, tlb, tle), Arrow(position=0.5));
-//     label(label, zr, N);
-// }
+{
+    string label = "$A_1{-}T_0$";
+    pen pen = green;
+    pair zl = z(1,0);
+    pair zr = z(2,0);
+    pair zd = z(1,-1);
+    path l = circle(zl, kf);
+    path r = circle(zr, kf);
+    path d = circle(zd, kf);
+    real[][] lr = intersections(l,r);
+    real[][] ld = intersections(l,d);
+    real[][] rd = intersections(r,d);
+    path pa = subpath(d, rd[0][1], ld[0][1]);
+    path pb = subpath(l, ld[0][0], lr[1][0]);
+    path pc = subpath(r, lr[1][1], rd[0][0]);
+    fill(pa..pb..pc..cycle, pen + opacity(0.2));
+    draw(pa, Arrow(position=0.6));
+    draw(pb, Arrow(position=1.6));
+    draw(reverse(pc), Arrow(position=0.6));
+    label(label, zd + 2g1/6, N);
+}
+{
+    string label = "$2(A_1{-}T_0)$";
+    pen pen = green;
+    pair zl = z(1,0);
+    pair zr = z(2,0);
+    pair zu = z(1,1);
+    path l = circle(zl, kf);
+    path r = circle(zr, kf);
+    path u = circle(zu, kf);
+    real[][] lr = intersections(l,r);
+    real[][] lu = intersections(l,u);
+    real[][] ru = intersections(r,u);
+    path pa = subpath(l, lr[0][0], lu[1][0]);
+    path pb = subpath(u, lu[1][1], ru[1][1]);
+    path pc = subpath(r, lr[0][1], ru[1][0]);
+    path pd = subpath(l, lu[0][0], lr[0][0]);
+    path pe = subpath(u, lu[0][1], ru[0][1]);
+    path pf = subpath(r, ru[0][0], lr[0][1]);
+    fill(pa..pb..reverse(pc)..cycle, pen + opacity(0.2));
+    fill(reverse(pd)..pe..pf..cycle, pen + opacity(0.2));
+    draw(pa, Arrow(position=0.7));
+    draw(pb, Arrow(position=0.6));
+    draw(pc, Arrow(position=0.6));
+    draw(pd, Arrow(position=0.6));
+    draw(pe, Arrow(position=0.6));
+    draw(pf, Arrow(position=1.6));
+    label(label, (zl + zr)/2 + g1/4);
+}
+{
+    string label = "$A_0{-}2A_1{+}T_0$";
+    pen pen = blue;
+    pair zl = z(-1,3);
+    pair zr = z(0,3);
+    pair zd = z(0,2);
+    path l = circle(zl, kf);
+    path r = circle(zr, kf);
+    path d = circle(zd, kf);
+    real[][] lr = intersections(l,r);
+    real[][] ld = intersections(l,d);
+    real[][] rd = intersections(r,d);
+    path pa = subpath(l, ld[0][0], lr[1][0]);
+    path pb = subpath(r, lr[1][1], rd[1][0]);
+    path pc = subpath(d, ld[0][1], rd[1][1]+4);
+    fill(pa..pb..reverse(pc)..cycle, pen + opacity(0.2));
+    draw(pa, Arrow(position=1.2));
+    draw(pb, Arrow(position=1));
+    draw(pc, Arrow(position=2));
+    label(label, zd + (0,3g/7));
+}
+{
+    string label = "$A_0{-}3A_1{+}2T_0$";
+    pen pen = yellow;
+    pair za = z(1,3); //label("a", za);
+    pair zb = z(2,3); //label("b", zb);
+    pair zc = z(2,2); //label("c", zc);
+    pair zd = z(3,2); //label("d", zd);
+    path a = circle(za, kf);
+    path b = circle(zb, kf);
+    path c = circle(zc, kf);
+    path d = circle(zd, kf);
+    real[][] ac = intersections(a,c);
+    real[][] bc = intersections(b,c);
+    real[][] dc = intersections(d,c);
+    real[][] ab = intersections(a,b);
+    real[][] bd = intersections(b,d);
+    path pa = subpath(a, ac[0][0], ab[1][0]);
+    path pb = subpath(b, ab[1][1], bd[0][0]);
+    path pc = subpath(d, bd[0][1], dc[1][0]);
+    path pd = subpath(c, ac[0][1], dc[1][1]);
+    fill(pa..pb..pc..reverse(pd)..cycle, pen + opacity(0.5));
+    draw(pa, Arrow(position=1.2));
+    draw(pb);
+    draw(pc, Arrow(position=1.5));
+    draw(pd, Arrow(position=1.7));
+    label(label, zc+(0,3g/7));
+}
 
-// limits(z(0,1) - (1.2kf,1.2kf),
-//        z(4,3) + (1.2kf,1.2kf), Crop);
+xaxis("$k_x$", YEquals(-gy), xmin=-1g, xmax=0, Arrow);
+yaxis("$k_y$", XEquals(-1g), ymin=-gy, ymax=0, Arrow);
+
+limits(z(-1,0) - (1.2kf,1.2kf),
+       z(3,2) + (1.2kf,1.2kf), Crop);
