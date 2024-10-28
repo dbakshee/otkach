@@ -24,7 +24,7 @@ for (int i = -1; i < m + 2; ++i) {
     pen pen = red;
     pair zc = z(0,1);
     fill(arc(zc, kf, 0, 360)..cycle, pen + opacity(0.2));
-    draw(arc(zc, kf, 0, 360), Arrow(position=1.5));
+    draw(arc(zc, kf, 0, 360), Arrow(position=2.5));
     label(label, zc);
 }
 //
@@ -229,7 +229,7 @@ for (int i = -1; i < m + 2; ++i) {
         cycle,
         pen + opacity(0.2));
     draw(arc(zl, kf, tlb, tle), Arrow(position=1));
-    draw(arc(zr, kf, trb, tre), Arrow(position=1));
+    draw(arc(zr, kf, trb, tre), Arrow(position=1.5));
     label(label, (zl+zr)/2);
 }
 {
@@ -256,8 +256,12 @@ for (int i = -1; i < m + 2; ++i) {
     label(label, zr, N);
 }
 
-xaxis("$k_x$", YEquals(0), xmin=-1g, xmax=g/2, Arrow);
-yaxis("$k_y$", XEquals(0-0.5g), ymin=-gy, ymax=gy, Arrow);
+xaxis("$k_x$", YEquals(g*sqrt(3)), xmin=-0.5g, xmax=-0.05g, Arrow);
+yaxis(XEquals(-0.5g), ymin=g*sqrt(3), ymax=2.5g, Arrow);
+label("$k_y$", (-0.5g,2.5g), N);
 
-limits(z(0,1) - (1.4g,1.4gy),
-       z(4,3) + (1.2kf,1.2kf), Crop);
+//xaxis("$k_x$", YEquals(0), xmin=-1g, xmax=g/2, Arrow);
+//yaxis("$k_y$", XEquals(0-0.5g), ymin=-gy, ymax=gy, Arrow);
+
+limits(z(0,1) - (1.1g,0.95gy),
+       z(4,3) + (1.05kf,1.2kf), Crop);
